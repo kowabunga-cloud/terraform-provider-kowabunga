@@ -25,7 +25,7 @@ provider "kowabunga" {
 
 And now run terraform init:
 
-```
+```sh
 $ terraform init
 ```
 
@@ -38,7 +38,6 @@ provider "kowabunga" {
 }
 ```
 
-```
 ## Authors
 
-* The Kowabunga Project (https://www.kowabunga.cloud/)
+The Kowabunga Project (https://www.kowabunga.cloud/)
