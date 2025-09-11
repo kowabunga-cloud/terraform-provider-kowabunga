@@ -10,10 +10,10 @@ GOVULNCHECK = $(BINDIR)/govulncheck
 GOVULNCHECK_VERSION = v1.1.4
 
 GOLINT = $(BINDIR)/golangci-lint
-GOLINT_VERSION = v2.0.2
+GOLINT_VERSION = v2.4.0
 
 GOSEC = $(BINDIR)/gosec
-GOSEC_VERSION = v2.22.3
+GOSEC_VERSION = v2.22.8
 
 V = 0
 Q = $(if $(filter 1,$V),,@)
