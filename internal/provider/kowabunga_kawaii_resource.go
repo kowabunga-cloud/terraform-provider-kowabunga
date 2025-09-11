@@ -430,6 +430,14 @@ func (r *KawaiiResource) Schema(ctx context.Context, req resource.SchemaRequest,
 // converts kawaii from Terraform model to Kowabunga API model //
 //////////////////////////////////////////////////////////////
 
+func kawaiiNetipModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.KawaiiNetIp {
+	return &sdk.KawaiiNetIp{
+		Public:  []string{},
+		Private: []string{},
+		Zones:   []sdk.KawaiiNetIpZone{},
+	}
+}
+
 func kawaiiFirewallModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.KawaiiFirewall {
 	fwModel := sdk.KawaiiFirewall{
 		Ingress:      []sdk.KawaiiFirewallIngressRule{},
@@ -619,6 +627,7 @@ func kawaiiVpcPeeringsModel(ctx *context.Context, d *KawaiiResourceModel) []sdk.
 func kawaiiResourceToModel(ctx *context.Context, d *KawaiiResourceModel) sdk.Kawaii {
 	return sdk.Kawaii{
 		Description: d.Desc.ValueStringPointer(),
+		Netip:       kawaiiNetipModel(ctx, d),
 		Firewall:    kawaiiFirewallModel(ctx, d),
 		Dnat:        kawaiiNatRulesModel(ctx, d),
 		VpcPeerings: kawaiiVpcPeeringsModel(ctx, d),
