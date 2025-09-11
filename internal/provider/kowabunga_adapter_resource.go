@@ -218,7 +218,7 @@ func (r *AdapterResource) GetSubnetData(ctx context.Context, data *AdapterResour
 		return err
 	}
 	data.Netmask = types.StringValue(ipv4MaskString(c.Mask()))
-	size, _ := c.MaskSize()
+	size, _ := c.Mask().Size()
 	data.NetmaskBitSize = types.Int64Value(int64(size))
 	data.Gateway = types.StringValue(subnet.Gateway)
 
