@@ -22,6 +22,9 @@ import (
 
 const (
 	DnsRecordResourceName = "dns_record"
+
+	DnsRecordResourceErrTooFewArguments  = "either 'project' or 'region' field is required"
+	DnsRecordResourceErrTooManyArguments = "one can't ask for both 'project' and 'region' fields"
 )
 
 var _ resource.Resource = &DnsRecordResource{}
@@ -40,6 +43,7 @@ type DnsRecordResourceModel struct {
 	Timeouts  timeouts.Value `tfsdk:"timeouts"`
 	Name      types.String   `tfsdk:"name"`
 	Desc      types.String   `tfsdk:"desc"`
+	Region    types.String   `tfsdk:"region"`
 	Project   types.String   `tfsdk:"project"`
 	Addresses types.List     `tfsdk:"addresses"`
 }
@@ -62,7 +66,13 @@ func (r *DnsRecordResource) Schema(ctx context.Context, req resource.SchemaReque
 		Attributes: map[string]schema.Attribute{
 			KeyProject: schema.StringAttribute{
 				MarkdownDescription: "Associated project name or ID",
-				Required:            true,
+				Optional:            true,
+				Computed:            true,
+			},
+			KeyRegion: schema.StringAttribute{
+				MarkdownDescription: "Associated region name or ID",
+				Optional:            true,
+				Computed:            true,
 			},
 			KeyAddresses: schema.ListAttribute{
 				MarkdownDescription: "The list of IPv4 addresses to be associated with the DNS record",
@@ -118,20 +128,54 @@ func (r *DnsRecordResource) Create(ctx context.Context, req resource.CreateReque
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	// find parent project
-	projectId, err := getProjectID(ctx, r.Data, data.Project.ValueString())
-	if err != nil {
-		errorCreateGeneric(resp, err)
+	// check that at least one argument has been passed over
+	if data.Project.ValueString() == "" && data.Region.ValueString() == "" {
+		resp.Diagnostics.AddError(ErrorGeneric, DnsRecordResourceErrTooFewArguments)
 		return
 	}
-	// create a new record
-	m := recordResourceToModel(data)
-	record, _, err := r.Data.K.ProjectAPI.CreateProjectDnsRecord(ctx, projectId).DnsRecord(m).Execute()
-	if err != nil {
-		errorCreateGeneric(resp, err)
+
+	// check that no all arguments has been passed over
+	if data.Project.ValueString() != "" && data.Region.ValueString() != "" {
+		resp.Diagnostics.AddError(ErrorGeneric, DnsRecordResourceErrTooManyArguments)
 		return
 	}
-	data.ID = types.StringPointerValue(record.Id)
+
+	// request by project
+	if data.Project.ValueString() != "" {
+		// find parent project
+		projectId, err := getProjectID(ctx, r.Data, data.Project.ValueString())
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
+		// create a new record
+		m := recordResourceToModel(data)
+		record, _, err := r.Data.K.ProjectAPI.CreateProjectDnsRecord(ctx, projectId).DnsRecord(m).Execute()
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
+		data.ID = types.StringPointerValue(record.Id)
+	}
+
+	// request by region
+	if data.Region.ValueString() != "" {
+		// find parent region
+		regionId, err := getRegionID(ctx, r.Data, data.Region.ValueString())
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
+		// create a new record
+		m := recordResourceToModel(data)
+		record, _, err := r.Data.K.RegionAPI.CreateRegionDnsRecord(ctx, regionId).DnsRecord(m).Execute()
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
+		data.ID = types.StringPointerValue(record.Id)
+	}
+
 	tflog.Trace(ctx, "created DNS record resource")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

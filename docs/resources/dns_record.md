@@ -19,11 +19,12 @@ Manages a DNS record resource
 
 - `addresses` (List of String) The list of IPv4 addresses to be associated with the DNS record
 - `name` (String) Resource name
-- `project` (String) Associated project name or ID
 
 ### Optional
 
 - `desc` (String) Resource extended description
+- `project` (String) Associated project name or ID
+- `region` (String) Associated region name or ID
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
 ### Read-Only
