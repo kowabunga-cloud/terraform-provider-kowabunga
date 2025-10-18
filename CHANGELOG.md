@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.56.0 (2025-10-18)
+
+The Kowabunga project team is happy to announce the immediate availability of Kowabunga Terraform provider v0.56.0.
+
+* **NEW**: updated Go modules dependencies.
+* **NEW**: implement API v0.53.1 changes (DNS record for region).
+
 ## 0.55.1 (2025-09-11)
 
 The Kowabunga project team is happy to announce the immediate availability of Kowabunga Terraform provider v0.55.1.
