@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.56.1 (2025-10-26)
+
+The Kowabunga project team is happy to announce the immediate availability of Kowabunga Terraform provider v0.56.1.
+
+* **NEW**: implement API v0.53.2 changes (domain attribute for region).
+* **BUG**: fix **kowabunga_dns_record** read back.
+
 ## 0.56.0 (2025-10-18)
 
 The Kowabunga project team is happy to announce the immediate availability of Kowabunga Terraform provider v0.56.0.
