@@ -67,12 +67,10 @@ func (r *DnsRecordResource) Schema(ctx context.Context, req resource.SchemaReque
 			KeyProject: schema.StringAttribute{
 				MarkdownDescription: "Associated project name or ID",
 				Optional:            true,
-				Computed:            true,
 			},
 			KeyRegion: schema.StringAttribute{
 				MarkdownDescription: "Associated region name or ID",
 				Optional:            true,
-				Computed:            true,
 			},
 			KeyAddresses: schema.ListAttribute{
 				MarkdownDescription: "The list of IPv4 addresses to be associated with the DNS record",
