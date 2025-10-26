@@ -8,6 +8,7 @@ package provider
 
 import (
 	"context"
+	"maps"
 
 	sdk "github.com/kowabunga-cloud/kowabunga-go"
 
@@ -38,6 +39,7 @@ type RegionResourceModel struct {
 	Timeouts timeouts.Value `tfsdk:"timeouts"`
 	Name     types.String   `tfsdk:"name"`
 	Desc     types.String   `tfsdk:"desc"`
+	Domain   types.String   `tfsdk:"domain"`
 }
 
 func (r *RegionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -55,8 +57,14 @@ func (r *RegionResource) Configure(ctx context.Context, req resource.ConfigureRe
 func (r *RegionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Manages a region resource",
-		Attributes:          resourceAttributes(&ctx),
+		Attributes: map[string]schema.Attribute{
+			KeyDomain: schema.StringAttribute{
+				MarkdownDescription: "Region domain name (e.g. myregion.kowabunga.acme.com).",
+				Required:            true,
+			},
+		},
 	}
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
 }
 
 // converts region from Terraform model to Kowabunga API model
@@ -64,6 +72,7 @@ func regionResourceToModel(d *RegionResourceModel) sdk.Region {
 	return sdk.Region{
 		Name:        d.Name.ValueString(),
 		Description: d.Desc.ValueStringPointer(),
+		Domain:      d.Domain.ValueString(),
 	}
 }
 
@@ -79,6 +88,7 @@ func regionModelToResource(r *sdk.Region, d *RegionResourceModel) {
 	} else {
 		d.Desc = types.StringValue("")
 	}
+	d.Domain = types.StringValue(r.Domain)
 }
 
 func (r *RegionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
