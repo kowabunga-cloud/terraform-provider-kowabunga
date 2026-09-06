@@ -95,6 +95,10 @@ func recordResourceToModel(d *DnsRecordResourceModel) sdk.DnsRecord {
 
 // converts record from Kowabunga API model to Terraform model
 func recordModelToResource(r *sdk.DnsRecord, d *DnsRecordResourceModel) {
+	if r == nil {
+		return
+	}
+
 	d.Name = types.StringValue(r.Name)
 	if r.Description != nil {
 		d.Desc = types.StringPointerValue(r.Description)
@@ -132,7 +136,7 @@ func (r *DnsRecordResource) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	// check that no all arguments has been passed over
+	// check that not all arguments have been passed over
 	if data.Project.ValueString() != "" && data.Region.ValueString() != "" {
 		resp.Diagnostics.AddError(ErrorGeneric, DnsRecordResourceErrTooManyArguments)
 		return
@@ -154,6 +158,7 @@ func (r *DnsRecordResource) Create(ctx context.Context, req resource.CreateReque
 			return
 		}
 		data.ID = types.StringPointerValue(record.Id)
+		recordModelToResource(record, data)
 	}
 
 	// request by region
@@ -172,6 +177,7 @@ func (r *DnsRecordResource) Create(ctx context.Context, req resource.CreateReque
 			return
 		}
 		data.ID = types.StringPointerValue(record.Id)
+		recordModelToResource(record, data)
 	}
 
 	tflog.Trace(ctx, "created DNS record resource")
