@@ -10,7 +10,6 @@ GOVULNCHECK = $(BINDIR)/govulncheck
 GOVULNCHECK_VERSION = v1.1.4
 
 GOLINT = $(BINDIR)/golangci-lint
-GOLINT_VERSION = v2.5.0
 
 GOSEC = $(BINDIR)/gosec
 GOSEC_VERSION = v2.22.10
@@ -34,11 +33,11 @@ mod: ; $(info $(M) collecting modules…) @
 
 .PHONY: fmt
 fmt: ; $(info $(M) formatting code…) @
-	$Q go fmt ./internal/provider .
+	$Q go fmt ./...
 
 .PHONY: get-lint
 get-lint: ; $(info $(M) downloading go-lint…) @
-	$Q test -x $(GOLINT) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s $(GOLINT_VERSION)
+	$Q test -x $(GOLINT) || GOBIN="$(PWD)/$(BINDIR)/" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 
 .PHONY: lint
 lint: get-lint ; $(info $(M) running linter…) @
@@ -62,7 +61,7 @@ sec: get-gosec ; $(info $(M) running gosec…) @ ## AST / SSA code checks
 
 .PHONY: vet
 vet: ; $(info $(M) running vetter…) @
-	$Q go vet ./internal/provider .
+	$Q go vet ./...
 
 .PHONY: doc
 doc: ; $(info $(M) generating documentation…) @
