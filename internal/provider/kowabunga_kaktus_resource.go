@@ -26,7 +26,7 @@ import (
 const (
 	KaktusResourceName = "kaktus"
 
-	KaktusDefaultValueCurrent          = "EUR"
+	KaktusDefaultValueCurrency         = "EUR"
 	KaktusDefaultValueCpuOverCommit    = 3
 	KaktusDefaultValueMemoryOverCommit = 2
 )
@@ -92,7 +92,7 @@ func (r *KaktusResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "Kaktus node monthly price currency (default: **EUR**)",
 				Computed:            true,
 				Optional:            true,
-				Default:             stringdefault.StaticString(KaktusDefaultValueCurrent),
+				Default:             stringdefault.StaticString(KaktusDefaultValueCurrency),
 			},
 			KeyCpuOvercommit: schema.Int64Attribute{
 				MarkdownDescription: "Kaktus node CPU over-commit factor (default: 3)",

@@ -23,7 +23,6 @@ import (
 
 const (
 	ProviderName = "kowabunga"
-	MimeJSON     = "application/json"
 )
 
 var _ provider.Provider = &KowabungaProvider{}

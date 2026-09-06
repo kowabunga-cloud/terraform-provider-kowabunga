@@ -164,7 +164,6 @@ const (
 	ErrorGeneric              = "Kowabunga Error"
 	ErrorUnconfiguredResource = "Unexpected Resource Configure Type"
 	ErrorExpectedProviderData = "Expected *KowabungaProviderData, got: %T."
-	ErrorUnknownKaktus        = "Unknown kaktus node"
 	ErrorUnknownKawaii        = "Unknown kawaii instance"
 	ErrorUnknownNfs           = "Unknown NFS storage"
 	ErrorUnknownProject       = "Unknown project"
