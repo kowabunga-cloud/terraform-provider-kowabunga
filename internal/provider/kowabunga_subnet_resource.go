@@ -258,7 +258,7 @@ func (r *SubnetResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 
 	data.ID = types.StringPointerValue(subnet.Id)
-	//subnetModelToResource(vnet, data) // read back resulting object
+	subnetModelToResource(subnet, data) // read back resulting object
 	tflog.Trace(ctx, "created subnet resource")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
