@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.57.3](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.2...v0.57.3) (2026-09-06)
+
+### Chores
+
+* update go-git and circl dependencies ([6b963c4](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/6b963c4ec4373d79996f136e93ce31787f1f6f5d))
+
 ## [0.57.2](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.1...v0.57.2) (2026-09-06)
 
 ### Chores
