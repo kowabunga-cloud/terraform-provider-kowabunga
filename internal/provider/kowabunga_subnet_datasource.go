@@ -100,9 +100,10 @@ func (d *SubnetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		errorDataSourceReadGeneric(resp, err)
 		return
 	}
+	found := false
 	for _, rg := range subnets {
 		r, _, err := d.Data.K.SubnetAPI.ReadSubnet(ctx, rg).Execute()
-		if err != nil || r == nil {
+		if err != nil || r == nil || r.Id == nil {
 			continue
 		}
 
@@ -114,6 +115,7 @@ func (d *SubnetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			} else {
 				data.App = types.StringValue("")
 			}
+			found = true
 			break
 		}
 
@@ -121,11 +123,12 @@ func (d *SubnetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		if r.Application != nil && *r.Application == data.App.ValueString() {
 			data.ID = types.StringPointerValue(r.Id)
 			data.Name = types.StringValue(r.Name)
+			found = true
 			break
 		}
 	}
 
-	if data.ID.IsNull() {
+	if !found {
 		resp.Diagnostics.AddError(ErrorGeneric, ErrorUnknownSubnet)
 		return
 	}
