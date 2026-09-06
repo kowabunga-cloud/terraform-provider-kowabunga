@@ -3,12 +3,12 @@
 page_title: "kowabunga_kompute Resource - terraform-provider-kowabunga"
 subcategory: ""
 description: |-
-  Manages a Kompute virtual machine resource. Kompute is an seamless automated way to create virtual machine resources. It abstract the complexity of manually creating instance, volumes and network adapters resources and binding them together. It is the RECOMMENDED way to create and manipulate virtual machine services, unless a specific hwardware configuration is required. Kompute provides 2 network adapters, a public (WAN) and a private (LAN/VPC) one, as well as up to two disks (first one for OS, optional second one for extra data).
+  Manages a Kompute virtual machine resource. Kompute is a seamless automated way to create virtual machine resources. It abstracts the complexity of manually creating instance, volumes and network adapters resources and binding them together. It is the RECOMMENDED way to create and manipulate virtual machine services, unless a specific hardware configuration is required. Kompute provides 2 network adapters, a public (WAN) and a private (LAN/VPC) one, as well as up to two disks (first one for OS, optional second one for extra data).
 ---
 
 # kowabunga_kompute (Resource)
 
-Manages a Kompute virtual machine resource. **Kompute** is an seamless automated way to create virtual machine resources. It abstract the complexity of manually creating instance, volumes and network adapters resources and binding them together. It is the **RECOMMENDED** way to create and manipulate virtual machine services, unless a specific hwardware configuration is required. Kompute provides 2 network adapters, a public (WAN) and a private (LAN/VPC) one, as well as up to two disks (first one for OS, optional second one for extra data).
+Manages a Kompute virtual machine resource. **Kompute** is a seamless automated way to create virtual machine resources. It abstracts the complexity of manually creating instance, volumes and network adapters resources and binding them together. It is the **RECOMMENDED** way to create and manipulate virtual machine services, unless a specific hardware configuration is required. Kompute provides 2 network adapters, a public (WAN) and a private (LAN/VPC) one, as well as up to two disks (first one for OS, optional second one for extra data).
 
 
 

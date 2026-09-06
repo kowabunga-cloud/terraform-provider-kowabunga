@@ -104,6 +104,10 @@ func volumeResourceToModel(d *VolumeResourceModel) sdk.Volume {
 
 // converts volume from Kowabunga API model to Terraform model
 func volumeModelToResource(r *sdk.Volume, d *VolumeResourceModel) {
+	if r == nil {
+		return
+	}
+
 	d.Name = types.StringValue(r.Name)
 	if r.Description != nil {
 		d.Desc = types.StringPointerValue(r.Description)
@@ -145,10 +149,16 @@ func (r *VolumeResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 	// find parent pool (optional)
-	poolId, _ := getPoolID(ctx, r.Data, data.Pool.ValueString())
+	var poolId string
+	if data.Pool.ValueString() != "" {
+		poolId, _ = getPoolID(ctx, r.Data, data.Pool.ValueString())
+	}
 
 	// find parent template (optional)
-	templateId, _ := getTemplateID(ctx, r.Data, data.Template.ValueString(), poolId)
+	var templateId string
+	if data.Template.ValueString() != "" {
+		templateId, _ = getTemplateID(ctx, r.Data, data.Template.ValueString(), poolId)
+	}
 
 	// create a new volume
 	m := volumeResourceToModel(data)

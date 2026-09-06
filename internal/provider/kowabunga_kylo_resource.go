@@ -197,7 +197,10 @@ func (r *KyloResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 	// find parent NFS storage (optional)
-	nfsId, _ := getNfsID(ctx, r.Data, data.Nfs.ValueString())
+	var nfsId string
+	if data.Nfs.ValueString() != "" {
+		nfsId, _ = getNfsID(ctx, r.Data, data.Nfs.ValueString())
+	}
 
 	// create a new Kylo
 	m := kyloResourceToModel(data)
