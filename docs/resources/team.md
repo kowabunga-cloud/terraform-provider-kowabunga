@@ -18,7 +18,7 @@ Manages a Kowabunga team resource
 ### Required
 
 - `name` (String) Resource name
-- `users` (List of String) The list of users to be associated with the instance
+- `users` (List of String) The list of users to be associated with the team
 
 ### Optional
 

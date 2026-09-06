@@ -88,7 +88,7 @@ func (r *AdapterResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Required:            true,
 			},
 			KeyMAC: schema.StringAttribute{
-				MarkdownDescription: "Network adapter hardware MAC address (e.g. 00:11:22:33:44:55). AUto-generated if unspecified.",
+				MarkdownDescription: "Network adapter hardware MAC address (e.g. 00:11:22:33:44:55). Auto-generated if unspecified.",
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
@@ -105,7 +105,7 @@ func (r *AdapterResource) Schema(ctx context.Context, req resource.SchemaRequest
 				},
 			},
 			KeyAssign: schema.BoolAttribute{
-				MarkdownDescription: "Whether an IP address should be automatically assigned to the adapter (default: **true). Useless if addresses have been specified",
+				MarkdownDescription: "Whether an IP address should be automatically assigned to the adapter (default: **true**). Useless if addresses have been specified",
 				Computed:            true,
 				Optional:            true,
 				Default:             booldefault.StaticBool(AdapterDefaultValueAssign),

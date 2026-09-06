@@ -330,7 +330,7 @@ func (r *KawaiiResource) SchemaVpcPeerings() schema.ListNestedAttribute {
 					Required:            true,
 				},
 				KeyPolicy: schema.StringAttribute{
-					MarkdownDescription: "The default VPC traffic forwarding policy: 'accept' (default) or 'drop'",
+					MarkdownDescription: "The default VPC traffic forwarding policy: 'drop' (default) or 'accept'",
 					Optional:            true,
 					Computed:            true,
 					Default:             stringdefault.StaticString(KawaiiDefaultValueForwardPolicy),

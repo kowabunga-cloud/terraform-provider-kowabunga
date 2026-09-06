@@ -96,7 +96,7 @@ Optional:
 
 - `egress_rules` (Attributes List) The firewall list of forwarding egress rules to VPC peered subnet. ICMP trafficis always accepted. The specified ruleset will be explicitly accepted if drop is the default policy (useless otherwise) (see [below for nested schema](#nestedatt--vpc_peerings--egress_rules))
 - `ingress_rules` (Attributes List) The firewall list of forwarding ingress rules from VPC peered subnet. ICMP traffic is always accepted. The specified ruleset will be explicitly accepted if drop is the default policy (useless otherwise) (see [below for nested schema](#nestedatt--vpc_peerings--ingress_rules))
-- `policy` (String) The default VPC traffic forwarding policy: 'accept' (default) or 'drop'
+- `policy` (String) The default VPC traffic forwarding policy: 'drop' (default) or 'accept'
 
 Read-Only:
 

@@ -61,7 +61,7 @@ func (r *TeamResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 		MarkdownDescription: "Manages a Kowabunga team resource",
 		Attributes: map[string]schema.Attribute{
 			KeyUsers: schema.ListAttribute{
-				MarkdownDescription: "The list of users to be associated with the instance",
+				MarkdownDescription: "The list of users to be associated with the team",
 				ElementType:         types.StringType,
 				Required:            true,
 			},

@@ -23,9 +23,9 @@ Manages a network adapter resource
 ### Optional
 
 - `addresses` (List of String) Network adapter list of associated IPv4 addresses
-- `assign` (Boolean) Whether an IP address should be automatically assigned to the adapter (default: **true). Useless if addresses have been specified
+- `assign` (Boolean) Whether an IP address should be automatically assigned to the adapter (default: **true**). Useless if addresses have been specified
 - `desc` (String) Resource extended description
-- `hwaddress` (String) Network adapter hardware MAC address (e.g. 00:11:22:33:44:55). AUto-generated if unspecified.
+- `hwaddress` (String) Network adapter hardware MAC address (e.g. 00:11:22:33:44:55). Auto-generated if unspecified.
 - `reserved` (Boolean) Whether the network adapter is reserved (e.g. router), i.e. where the same hardware address can be reused over several subnets (default: **false**)
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
