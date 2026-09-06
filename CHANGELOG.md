@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.57.1](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.0...v0.57.1) (2026-09-06)
+
+### Bug Fixes
+
+* correct ipsec connection resource assertion, defaults and schema descriptions ([9ad9d44](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/9ad9d4407182314a74d3b6d49e39c558f2728a49))
+* correct typos in resource schema descriptions and docs ([1bfdec4](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/1bfdec4bc3c3e388141573db65b92e5d43cee603))
+* guard against nil pointers and empty identifiers in resource lookup helpers ([1415db5](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/1415db549fcd9f7c435812cafb237f86476db771))
+* populate computed subnet state attributes on resource creation ([8ce55c4](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/8ce55c4312c724daaeb5a452eda321d1999d6fb3))
+* populate state and guard against nil in dns record resource ([caf89f9](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/caf89f944d22edc0145a95821f3b6a17ef97a62d))
+* prevent nil dereferences in project quotas and private subnets mapping ([eed1526](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/eed1526bd83165a572dbeacb2ae80159ca62a0c3))
+
+### Chores
+
+* modernize makefile tooling and lint targets ([23deebb](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/23deebb7fb081835bddbd7f2ef313e9d7ef67249))
+* update dependencies to resolve security vulnerabilities ([3c6d83d](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/3c6d83d703319ec4dc77b94dc8078b1e494a5a02))
+
+### Performance Improvements
+
+* avoid unnecessary API lookups for optional pool, template and nfs parameters ([a1fcdfc](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/a1fcdfcde2ffb376194b72dbfca2df9ee61d4fd7))
+
 ## [0.57.0](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.56.1...v0.57.0) (2026-09-06)
 
 ### Chores
