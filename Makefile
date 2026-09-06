@@ -19,7 +19,11 @@ Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "\033[34;1m▶\033[0m")
 
 .PHONY: all
-all: mod fmt lint vet $(BIN) ; @
+all: mod fmt lint vet test $(BIN) ; @
+
+.PHONY: test
+test: ; $(info $(M) running tests…) @
+	$Q go test -v ./...
 
 # Updates all go modules
 update: ; $(info $(M) updating modules…) @
