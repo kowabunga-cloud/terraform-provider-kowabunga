@@ -199,7 +199,11 @@ func (r *KyloResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// find parent NFS storage (optional)
 	var nfsId string
 	if data.Nfs.ValueString() != "" {
-		nfsId, _ = getNfsID(ctx, r.Data, data.Nfs.ValueString())
+		nfsId, err = getNfsID(ctx, r.Data, data.Nfs.ValueString())
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
 	}
 
 	// create a new Kylo

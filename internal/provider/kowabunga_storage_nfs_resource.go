@@ -197,7 +197,11 @@ func (r *StorageNfsResource) Create(ctx context.Context, req resource.CreateRequ
 	// find parent pool (optional)
 	var poolId string
 	if data.Pool.ValueString() != "" {
-		poolId, _ = getPoolID(ctx, r.Data, data.Pool.ValueString())
+		poolId, err = getPoolID(ctx, r.Data, data.Pool.ValueString())
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
 	}
 
 	// create a new NFS storage

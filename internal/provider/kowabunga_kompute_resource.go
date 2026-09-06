@@ -229,13 +229,21 @@ func (r *KomputeResource) Create(ctx context.Context, req resource.CreateRequest
 	// find parent pool (optional)
 	var poolId string
 	if data.Pool.ValueString() != "" {
-		poolId, _ = getPoolID(ctx, r.Data, data.Pool.ValueString())
+		poolId, err = getPoolID(ctx, r.Data, data.Pool.ValueString())
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
 	}
 
 	// find parent template (optional)
 	var templateId string
 	if data.Template.ValueString() != "" {
-		templateId, _ = getTemplateID(ctx, r.Data, data.Template.ValueString(), poolId)
+		templateId, err = getTemplateID(ctx, r.Data, data.Template.ValueString(), poolId)
+		if err != nil {
+			errorCreateGeneric(resp, err)
+			return
+		}
 	}
 
 	// create a new Kompute
