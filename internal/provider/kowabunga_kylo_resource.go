@@ -120,9 +120,9 @@ func (r *KyloResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 }
 
 // converts kylo from Terraform model to Kowabunga API model
-func kyloResourceToModel(d *KyloResourceModel) sdk.Kylo {
+func kyloResourceToModel(ctx context.Context, d *KyloResourceModel) sdk.Kylo {
 	protocols64 := []int64{}
-	d.Protocols.ElementsAs(context.TODO(), &protocols64, false)
+	d.Protocols.ElementsAs(ctx, &protocols64, false)
 	protocols32 := []int32{}
 	for _, p := range protocols64 {
 		protocols32 = append(protocols32, int32(p))
@@ -203,7 +203,7 @@ func (r *KyloResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	// create a new Kylo
-	m := kyloResourceToModel(data)
+	m := kyloResourceToModel(ctx, data)
 	api := r.Data.K.ProjectAPI.CreateProjectRegionKylo(ctx, projectId, regionId).Kylo(m)
 	if nfsId != "" {
 		api = api.NfsId(nfsId)
@@ -265,7 +265,7 @@ func (r *KyloResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := kyloResourceToModel(data)
+	m := kyloResourceToModel(ctx, data)
 	_, _, err := r.Data.K.KyloAPI.UpdateKylo(ctx, data.ID.ValueString()).Kylo(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

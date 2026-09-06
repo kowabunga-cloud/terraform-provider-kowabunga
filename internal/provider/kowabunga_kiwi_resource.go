@@ -75,10 +75,10 @@ func (r *KiwiResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 }
 
 // converts kiwi from Terraform model to Kowabunga API model
-func kiwiResourceToModel(d *KiwiResourceModel) sdk.Kiwi {
+func kiwiResourceToModel(ctx context.Context, d *KiwiResourceModel) sdk.Kiwi {
 
 	agents := []string{}
-	d.Agents.ElementsAs(context.TODO(), &agents, false)
+	d.Agents.ElementsAs(ctx, &agents, false)
 
 	return sdk.Kiwi{
 		Name:        d.Name.ValueString(),
@@ -131,7 +131,7 @@ func (r *KiwiResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 	// create a new network gateway
-	m := kiwiResourceToModel(data)
+	m := kiwiResourceToModel(ctx, data)
 	kiwi, _, err := r.Data.K.RegionAPI.CreateKiwi(ctx, regionId).Kiwi(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -189,7 +189,7 @@ func (r *KiwiResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := kiwiResourceToModel(data)
+	m := kiwiResourceToModel(ctx, data)
 	_, _, err := r.Data.K.KiwiAPI.UpdateKiwi(ctx, data.ID.ValueString()).Kiwi(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

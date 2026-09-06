@@ -135,14 +135,14 @@ func (r *StoragePoolResource) Schema(ctx context.Context, req resource.SchemaReq
 }
 
 // converts storage pool from Terraform model to Kowabunga API model
-func storagePoolResourceToModel(d *StoragePoolResourceModel) sdk.StoragePool {
+func storagePoolResourceToModel(ctx context.Context, d *StoragePoolResourceModel) sdk.StoragePool {
 	cost := &sdk.Cost{
 		Price:    float32(d.Price.ValueFloat64()),
 		Currency: d.Currency.ValueString(),
 	}
 
 	agents := []string{}
-	d.Agents.ElementsAs(context.TODO(), &agents, false)
+	d.Agents.ElementsAs(ctx, &agents, false)
 
 	return sdk.StoragePool{
 		Name:           d.Name.ValueString(),
@@ -219,7 +219,7 @@ func (r *StoragePoolResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	// create a new storage pool
-	m := storagePoolResourceToModel(data)
+	m := storagePoolResourceToModel(ctx, data)
 	pool, _, err := r.Data.K.RegionAPI.CreateStoragePool(ctx, regionId).StoragePool(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -286,7 +286,7 @@ func (r *StoragePoolResource) Update(ctx context.Context, req resource.UpdateReq
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := storagePoolResourceToModel(data)
+	m := storagePoolResourceToModel(ctx, data)
 	_, _, err := r.Data.K.PoolAPI.UpdateStoragePool(ctx, data.ID.ValueString()).StoragePool(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

@@ -125,9 +125,9 @@ func (r *StorageNfsResource) Schema(ctx context.Context, req resource.SchemaRequ
 }
 
 // converts NFS storage from Terraform model to Kowabunga API model
-func storageNfsResourceToModel(d *StorageNfsResourceModel) sdk.StorageNFS {
+func storageNfsResourceToModel(ctx context.Context, d *StorageNfsResourceModel) sdk.StorageNFS {
 	backends := []string{}
-	d.Backends.ElementsAs(context.TODO(), &backends, false)
+	d.Backends.ElementsAs(ctx, &backends, false)
 	sort.Strings(backends)
 
 	return sdk.StorageNFS{
@@ -201,7 +201,7 @@ func (r *StorageNfsResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	// create a new NFS storage
-	m := storageNfsResourceToModel(data)
+	m := storageNfsResourceToModel(ctx, data)
 	api := r.Data.K.RegionAPI.CreateStorageNFS(ctx, regionId).StorageNFS(m)
 	if poolId != "" {
 		api = api.PoolId(poolId)
@@ -273,7 +273,7 @@ func (r *StorageNfsResource) Update(ctx context.Context, req resource.UpdateRequ
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := storageNfsResourceToModel(data)
+	m := storageNfsResourceToModel(ctx, data)
 	_, _, err := r.Data.K.NfsAPI.UpdateStorageNFS(ctx, data.ID.ValueString()).StorageNFS(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

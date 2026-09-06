@@ -107,12 +107,12 @@ func (r *InstanceResource) Schema(ctx context.Context, req resource.SchemaReques
 }
 
 // converts instance from Terraform model to Kowabunga API model
-func instanceResourceToModel(d *InstanceResourceModel) sdk.Instance {
+func instanceResourceToModel(ctx context.Context, d *InstanceResourceModel) sdk.Instance {
 	memSize := d.Memory.ValueInt64() * HelperGbToBytes
 	adapters := []string{}
-	d.Adapters.ElementsAs(context.TODO(), &adapters, false)
+	d.Adapters.ElementsAs(ctx, &adapters, false)
 	volumes := []string{}
-	d.Volumes.ElementsAs(context.TODO(), &volumes, false)
+	d.Volumes.ElementsAs(ctx, &volumes, false)
 	sort.Strings(volumes)
 
 	return sdk.Instance{
@@ -190,7 +190,7 @@ func (r *InstanceResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 	// create a new instance
-	m := instanceResourceToModel(data)
+	m := instanceResourceToModel(ctx, data)
 	instance, _, err := r.Data.K.ProjectAPI.CreateProjectZoneInstance(ctx, projectId, zoneId).Instance(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -247,7 +247,7 @@ func (r *InstanceResource) Update(ctx context.Context, req resource.UpdateReques
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := instanceResourceToModel(data)
+	m := instanceResourceToModel(ctx, data)
 	_, _, err := r.Data.K.InstanceAPI.UpdateInstance(ctx, data.ID.ValueString()).Instance(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

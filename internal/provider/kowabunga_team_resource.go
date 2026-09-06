@@ -71,9 +71,9 @@ func (r *TeamResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 }
 
 // converts team from Terraform model to Kowabunga API model
-func teamResourceToModel(d *TeamResourceModel) sdk.Team {
+func teamResourceToModel(ctx context.Context, d *TeamResourceModel) sdk.Team {
 	users := []string{}
-	d.Users.ElementsAs(context.TODO(), &users, false)
+	d.Users.ElementsAs(ctx, &users, false)
 	sort.Strings(users)
 	return sdk.Team{
 		Name:        d.Name.ValueString(),
@@ -120,7 +120,7 @@ func (r *TeamResource) Create(ctx context.Context, req resource.CreateRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := teamResourceToModel(data)
+	m := teamResourceToModel(ctx, data)
 	team, _, err := r.Data.K.TeamAPI.CreateTeam(ctx).Team(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -177,7 +177,7 @@ func (r *TeamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := teamResourceToModel(data)
+	m := teamResourceToModel(ctx, data)
 	_, _, err := r.Data.K.TeamAPI.UpdateTeam(ctx, data.ID.ValueString()).Team(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

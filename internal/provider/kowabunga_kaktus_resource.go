@@ -117,9 +117,9 @@ func (r *KaktusResource) Schema(ctx context.Context, req resource.SchemaRequest,
 }
 
 // converts kaktus from Terraform model to Kowabunga API model
-func kaktusResourceToModel(d *KaktusResourceModel) sdk.Kaktus {
+func kaktusResourceToModel(ctx context.Context, d *KaktusResourceModel) sdk.Kaktus {
 	agents := []string{}
-	d.Agents.ElementsAs(context.TODO(), &agents, false)
+	d.Agents.ElementsAs(ctx, &agents, false)
 
 	return sdk.Kaktus{
 		Name:        d.Name.ValueString(),
@@ -195,7 +195,7 @@ func (r *KaktusResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 	// create a new kaktus
-	m := kaktusResourceToModel(data)
+	m := kaktusResourceToModel(ctx, data)
 	kaktus, _, err := r.Data.K.ZoneAPI.CreateKaktus(ctx, zoneId).Kaktus(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -253,7 +253,7 @@ func (r *KaktusResource) Update(ctx context.Context, req resource.UpdateRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := kaktusResourceToModel(data)
+	m := kaktusResourceToModel(ctx, data)
 	_, _, err := r.Data.K.KaktusAPI.UpdateKaktus(ctx, data.ID.ValueString()).Kaktus(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

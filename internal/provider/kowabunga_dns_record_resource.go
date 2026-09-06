@@ -83,9 +83,9 @@ func (r *DnsRecordResource) Schema(ctx context.Context, req resource.SchemaReque
 }
 
 // converts record from Terraform model to Kowabunga API model
-func recordResourceToModel(d *DnsRecordResourceModel) sdk.DnsRecord {
+func recordResourceToModel(ctx context.Context, d *DnsRecordResourceModel) sdk.DnsRecord {
 	addresses := []string{}
-	d.Addresses.ElementsAs(context.TODO(), &addresses, false)
+	d.Addresses.ElementsAs(ctx, &addresses, false)
 	return sdk.DnsRecord{
 		Name:        d.Name.ValueString(),
 		Description: d.Desc.ValueStringPointer(),
@@ -151,7 +151,7 @@ func (r *DnsRecordResource) Create(ctx context.Context, req resource.CreateReque
 			return
 		}
 		// create a new record
-		m := recordResourceToModel(data)
+		m := recordResourceToModel(ctx, data)
 		record, _, err := r.Data.K.ProjectAPI.CreateProjectDnsRecord(ctx, projectId).DnsRecord(m).Execute()
 		if err != nil {
 			errorCreateGeneric(resp, err)
@@ -170,7 +170,7 @@ func (r *DnsRecordResource) Create(ctx context.Context, req resource.CreateReque
 			return
 		}
 		// create a new record
-		m := recordResourceToModel(data)
+		m := recordResourceToModel(ctx, data)
 		record, _, err := r.Data.K.RegionAPI.CreateRegionDnsRecord(ctx, regionId).DnsRecord(m).Execute()
 		if err != nil {
 			errorCreateGeneric(resp, err)
@@ -231,7 +231,7 @@ func (r *DnsRecordResource) Update(ctx context.Context, req resource.UpdateReque
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := recordResourceToModel(data)
+	m := recordResourceToModel(ctx, data)
 	_, _, err := r.Data.K.RecordAPI.UpdateDnsRecord(ctx, data.ID.ValueString()).DnsRecord(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

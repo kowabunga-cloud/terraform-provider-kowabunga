@@ -151,9 +151,9 @@ func (r *AdapterResource) Schema(ctx context.Context, req resource.SchemaRequest
 }
 
 // converts adapter from Terraform model to Kowabunga API model
-func adapterResourceToModel(d *AdapterResourceModel) sdk.Adapter {
+func adapterResourceToModel(ctx context.Context, d *AdapterResourceModel) sdk.Adapter {
 	addresses := []string{}
-	d.Addresses.ElementsAs(context.TODO(), &addresses, false)
+	d.Addresses.ElementsAs(ctx, &addresses, false)
 	return sdk.Adapter{
 		Name:        d.Name.ValueString(),
 		Description: d.Desc.ValueStringPointer(),
@@ -251,7 +251,7 @@ func (r *AdapterResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	// create a new adapter
-	m := adapterResourceToModel(data)
+	m := adapterResourceToModel(ctx, data)
 	api := r.Data.K.SubnetAPI.CreateAdapter(ctx, subnetId).Adapter(m)
 	if data.Assign.ValueBool() && len(m.Addresses) == 0 {
 		api = api.AssignIP(data.Assign.ValueBool())
@@ -326,7 +326,7 @@ func (r *AdapterResource) Update(ctx context.Context, req resource.UpdateRequest
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := adapterResourceToModel(data)
+	m := adapterResourceToModel(ctx, data)
 	_, _, err := r.Data.K.AdapterAPI.UpdateAdapter(ctx, data.ID.ValueString()).Adapter(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

@@ -123,10 +123,10 @@ func (r *SubnetResource) Schema(ctx context.Context, req resource.SchemaRequest,
 }
 
 // converts subnet from Terraform model to Kowabunga API model
-func subnetResourceToModel(d *SubnetResourceModel) sdk.Subnet {
+func subnetResourceToModel(ctx context.Context, d *SubnetResourceModel) sdk.Subnet {
 	reservedRanges := []sdk.IpRange{}
 	ranges := []string{}
-	d.Reserved.ElementsAs(context.TODO(), &ranges, false)
+	d.Reserved.ElementsAs(ctx, &ranges, false)
 	for _, item := range ranges {
 		split := strings.Split(item, "-")
 		if len(split) != 2 {
@@ -141,7 +141,7 @@ func subnetResourceToModel(d *SubnetResourceModel) sdk.Subnet {
 
 	gwPoolRanges := []sdk.IpRange{}
 	gwRanges := []string{}
-	d.GwPool.ElementsAs(context.TODO(), &gwRanges, false)
+	d.GwPool.ElementsAs(ctx, &gwRanges, false)
 	for _, item := range gwRanges {
 		split := strings.Split(item, "-")
 		if len(split) != 2 {
@@ -155,7 +155,7 @@ func subnetResourceToModel(d *SubnetResourceModel) sdk.Subnet {
 	}
 
 	routes := []string{}
-	d.Routes.ElementsAs(context.TODO(), &routes, false)
+	d.Routes.ElementsAs(ctx, &routes, false)
 
 	return sdk.Subnet{
 		Name:        d.Name.ValueString(),
@@ -242,7 +242,7 @@ func (r *SubnetResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 	// create a new subnet
-	m := subnetResourceToModel(data)
+	m := subnetResourceToModel(ctx, data)
 	subnet, _, err := r.Data.K.VnetAPI.CreateSubnet(ctx, vnetId).Subnet(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -309,7 +309,7 @@ func (r *SubnetResource) Update(ctx context.Context, req resource.UpdateRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := subnetResourceToModel(data)
+	m := subnetResourceToModel(ctx, data)
 	_, _, err := r.Data.K.SubnetAPI.UpdateSubnet(ctx, data.ID.ValueString()).Subnet(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

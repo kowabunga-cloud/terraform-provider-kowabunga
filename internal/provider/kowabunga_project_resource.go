@@ -198,12 +198,12 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 }
 
 // converts project from Terraform model to Kowabunga API model
-func projectResourceToModel(d *ProjectResourceModel) sdk.Project {
+func projectResourceToModel(ctx context.Context, d *ProjectResourceModel) sdk.Project {
 	tags := []string{}
-	d.Tags.ElementsAs(context.TODO(), &tags, false)
+	d.Tags.ElementsAs(ctx, &tags, false)
 
 	metas := map[string]string{}
-	d.Metadatas.ElementsAs(context.TODO(), &metas, false)
+	d.Metadatas.ElementsAs(ctx, &metas, false)
 	metadatas := []sdk.Metadata{}
 	for k, v := range metas {
 		m := sdk.Metadata{
@@ -225,11 +225,11 @@ func projectResourceToModel(d *ProjectResourceModel) sdk.Project {
 	}
 
 	teams := []string{}
-	d.Teams.ElementsAs(context.TODO(), &teams, false)
+	d.Teams.ElementsAs(ctx, &teams, false)
 	sort.Strings(teams)
 
 	regions := []string{}
-	d.Regions.ElementsAs(context.TODO(), &regions, false)
+	d.Regions.ElementsAs(ctx, &regions, false)
 	sort.Strings(regions)
 
 	return sdk.Project{
@@ -371,7 +371,7 @@ func (r *ProjectResource) Create(ctx context.Context, req resource.CreateRequest
 	defer r.Data.Mutex.Unlock()
 
 	// create a new project
-	m := projectResourceToModel(data)
+	m := projectResourceToModel(ctx, data)
 	project, _, err := r.Data.K.ProjectAPI.CreateProject(ctx).Project(m).SubnetSize(int32(data.SubnetSize.ValueInt64())).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
@@ -431,7 +431,7 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := projectResourceToModel(data)
+	m := projectResourceToModel(ctx, data)
 	_, _, err := r.Data.K.ProjectAPI.UpdateProject(ctx, data.ID.ValueString()).Project(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
