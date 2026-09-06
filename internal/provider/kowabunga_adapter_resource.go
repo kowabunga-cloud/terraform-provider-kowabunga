@@ -327,7 +327,13 @@ func (r *AdapterResource) Update(ctx context.Context, req resource.UpdateRequest
 	defer r.Data.Mutex.Unlock()
 
 	m := adapterResourceToModel(ctx, data)
-	_, _, err := r.Data.K.AdapterAPI.UpdateAdapter(ctx, data.ID.ValueString()).Adapter(m).Execute()
+	adapter, _, err := r.Data.K.AdapterAPI.UpdateAdapter(ctx, data.ID.ValueString()).Adapter(m).Execute()
+	if err != nil {
+		errorUpdateGeneric(resp, err)
+		return
+	}
+	adapterModelToResource(adapter, data)
+	err = r.GetSubnetData(ctx, data)
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

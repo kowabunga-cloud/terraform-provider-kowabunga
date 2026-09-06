@@ -266,12 +266,13 @@ func (r *KyloResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := kyloResourceToModel(ctx, data)
-	_, _, err := r.Data.K.KyloAPI.UpdateKylo(ctx, data.ID.ValueString()).Kylo(m).Execute()
+	kylo, _, err := r.Data.K.KyloAPI.UpdateKylo(ctx, data.ID.ValueString()).Kylo(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	kyloModelToResource(kylo, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

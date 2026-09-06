@@ -287,12 +287,13 @@ func (r *StoragePoolResource) Update(ctx context.Context, req resource.UpdateReq
 	defer r.Data.Mutex.Unlock()
 
 	m := storagePoolResourceToModel(ctx, data)
-	_, _, err := r.Data.K.PoolAPI.UpdateStoragePool(ctx, data.ID.ValueString()).StoragePool(m).Execute()
+	pool, _, err := r.Data.K.PoolAPI.UpdateStoragePool(ctx, data.ID.ValueString()).StoragePool(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	storagePoolModelToResource(pool, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

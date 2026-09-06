@@ -303,12 +303,13 @@ func (r *KomputeResource) Update(ctx context.Context, req resource.UpdateRequest
 	defer r.Data.Mutex.Unlock()
 
 	m := komputeResourceToModel(data)
-	_, _, err := r.Data.K.KomputeAPI.UpdateKompute(ctx, data.ID.ValueString()).Kompute(m).Execute()
+	kompute, _, err := r.Data.K.KomputeAPI.UpdateKompute(ctx, data.ID.ValueString()).Kompute(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	komputeModelToResource(kompute, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

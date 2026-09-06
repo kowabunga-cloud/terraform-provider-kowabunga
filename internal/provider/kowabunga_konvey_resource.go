@@ -388,12 +388,13 @@ func (r *KonveyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := konveyResourceToModel(ctx, data)
-	_, _, err := r.Data.K.KonveyAPI.UpdateKonvey(ctx, data.ID.ValueString()).Konvey(m).Execute()
+	konvey, _, err := r.Data.K.KonveyAPI.UpdateKonvey(ctx, data.ID.ValueString()).Konvey(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	konveyModelToResource(ctx, konvey, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

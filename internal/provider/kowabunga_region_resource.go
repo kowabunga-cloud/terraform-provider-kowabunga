@@ -166,12 +166,13 @@ func (r *RegionResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := regionResourceToModel(data)
-	_, _, err := r.Data.K.RegionAPI.UpdateRegion(ctx, data.ID.ValueString()).Region(m).Execute()
+	region, _, err := r.Data.K.RegionAPI.UpdateRegion(ctx, data.ID.ValueString()).Region(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	regionModelToResource(region, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

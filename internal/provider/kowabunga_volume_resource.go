@@ -225,12 +225,13 @@ func (r *VolumeResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := volumeResourceToModel(data)
-	_, _, err := r.Data.K.VolumeAPI.UpdateVolume(ctx, data.ID.ValueString()).Volume(m).Execute()
+	volume, _, err := r.Data.K.VolumeAPI.UpdateVolume(ctx, data.ID.ValueString()).Volume(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	volumeModelToResource(volume, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

@@ -432,12 +432,13 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 	defer r.Data.Mutex.Unlock()
 
 	m := projectResourceToModel(ctx, data)
-	_, _, err := r.Data.K.ProjectAPI.UpdateProject(ctx, data.ID.ValueString()).Project(m).Execute()
+	project, _, err := r.Data.K.ProjectAPI.UpdateProject(ctx, data.ID.ValueString()).Project(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	projectModelToResource(project, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

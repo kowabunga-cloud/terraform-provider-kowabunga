@@ -172,12 +172,13 @@ func (r *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := zoneResourceToModel(data)
-	_, _, err := r.Data.K.ZoneAPI.UpdateZone(ctx, data.ID.ValueString()).Zone(m).Execute()
+	zone, _, err := r.Data.K.ZoneAPI.UpdateZone(ctx, data.ID.ValueString()).Zone(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	zoneModelToResource(zone, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

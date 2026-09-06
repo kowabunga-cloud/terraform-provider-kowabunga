@@ -1019,12 +1019,13 @@ func (r *KawaiiResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := kawaiiResourceToModel(ctx, data)
-	_, _, err := r.Data.K.KawaiiAPI.UpdateKawaii(ctx, data.ID.ValueString()).Kawaii(m).Execute()
+	kawaii, _, err := r.Data.K.KawaiiAPI.UpdateKawaii(ctx, data.ID.ValueString()).Kawaii(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	kawaiiModelToResource(ctx, kawaii, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

@@ -212,12 +212,13 @@ func (r *TemplateResource) Update(ctx context.Context, req resource.UpdateReques
 	defer r.Data.Mutex.Unlock()
 
 	m := templateResourceToModel(data)
-	_, _, err := r.Data.K.TemplateAPI.UpdateTemplate(ctx, data.ID.ValueString()).Template(m).Execute()
+	template, _, err := r.Data.K.TemplateAPI.UpdateTemplate(ctx, data.ID.ValueString()).Template(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	templateModelToResource(template, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

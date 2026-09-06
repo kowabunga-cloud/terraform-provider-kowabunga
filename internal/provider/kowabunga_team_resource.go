@@ -178,12 +178,13 @@ func (r *TeamResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := teamResourceToModel(ctx, data)
-	_, _, err := r.Data.K.TeamAPI.UpdateTeam(ctx, data.ID.ValueString()).Team(m).Execute()
+	team, _, err := r.Data.K.TeamAPI.UpdateTeam(ctx, data.ID.ValueString()).Team(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	teamModelToResource(team, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

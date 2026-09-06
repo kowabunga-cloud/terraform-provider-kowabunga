@@ -508,12 +508,13 @@ func (r *KawaiiIPsecConnectionResource) Update(ctx context.Context, req resource
 	defer r.Data.Mutex.Unlock()
 
 	m := kawaiiIPsecResourceModel(ctx, data)
-	_, _, err := r.Data.K.KawaiiAPI.UpdateKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).KawaiiIpSec(m).Execute()
+	kawaiiIpSec, _, err := r.Data.K.KawaiiAPI.UpdateKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).KawaiiIpSec(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	kawaiiIPsecModelToResource(ctx, kawaiiIpSec, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

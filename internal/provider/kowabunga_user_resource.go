@@ -216,12 +216,13 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := userResourceToModel(data)
-	_, _, err := r.Data.K.UserAPI.UpdateUser(ctx, data.ID.ValueString()).User(m).Execute()
+	user, _, err := r.Data.K.UserAPI.UpdateUser(ctx, data.ID.ValueString()).User(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	userModelToResource(user, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

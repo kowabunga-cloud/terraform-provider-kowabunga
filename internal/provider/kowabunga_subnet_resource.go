@@ -310,12 +310,13 @@ func (r *SubnetResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := subnetResourceToModel(ctx, data)
-	_, _, err := r.Data.K.SubnetAPI.UpdateSubnet(ctx, data.ID.ValueString()).Subnet(m).Execute()
+	subnet, _, err := r.Data.K.SubnetAPI.UpdateSubnet(ctx, data.ID.ValueString()).Subnet(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	subnetModelToResource(subnet, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

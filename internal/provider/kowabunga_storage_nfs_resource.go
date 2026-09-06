@@ -274,12 +274,13 @@ func (r *StorageNfsResource) Update(ctx context.Context, req resource.UpdateRequ
 	defer r.Data.Mutex.Unlock()
 
 	m := storageNfsResourceToModel(ctx, data)
-	_, _, err := r.Data.K.NfsAPI.UpdateStorageNFS(ctx, data.ID.ValueString()).StorageNFS(m).Execute()
+	nfs, _, err := r.Data.K.NfsAPI.UpdateStorageNFS(ctx, data.ID.ValueString()).StorageNFS(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	storageNfsModelToResource(nfs, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

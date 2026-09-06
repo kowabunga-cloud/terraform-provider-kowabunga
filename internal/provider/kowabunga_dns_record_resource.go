@@ -232,11 +232,13 @@ func (r *DnsRecordResource) Update(ctx context.Context, req resource.UpdateReque
 	defer r.Data.Mutex.Unlock()
 
 	m := recordResourceToModel(ctx, data)
-	_, _, err := r.Data.K.RecordAPI.UpdateDnsRecord(ctx, data.ID.ValueString()).DnsRecord(m).Execute()
+	record, _, err := r.Data.K.RecordAPI.UpdateDnsRecord(ctx, data.ID.ValueString()).DnsRecord(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
+
+	recordModelToResource(record, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

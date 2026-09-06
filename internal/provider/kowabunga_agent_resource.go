@@ -179,12 +179,13 @@ func (r *AgentResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	defer r.Data.Mutex.Unlock()
 
 	m := agentResourceToModel(data)
-	_, _, err := r.Data.K.AgentAPI.UpdateAgent(ctx, data.ID.ValueString()).Agent(m).Execute()
+	agent, _, err := r.Data.K.AgentAPI.UpdateAgent(ctx, data.ID.ValueString()).Agent(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	agentModelToResource(agent, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

@@ -214,12 +214,13 @@ func (r *VNetResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := vnetResourceToModel(data)
-	_, _, err := r.Data.K.VnetAPI.UpdateVNet(ctx, data.ID.ValueString()).VNet(m).Execute()
+	vnet, _, err := r.Data.K.VnetAPI.UpdateVNet(ctx, data.ID.ValueString()).VNet(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	vnetModelToResource(vnet, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

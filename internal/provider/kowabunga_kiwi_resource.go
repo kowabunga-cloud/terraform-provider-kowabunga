@@ -190,12 +190,13 @@ func (r *KiwiResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := kiwiResourceToModel(ctx, data)
-	_, _, err := r.Data.K.KiwiAPI.UpdateKiwi(ctx, data.ID.ValueString()).Kiwi(m).Execute()
+	kiwi, _, err := r.Data.K.KiwiAPI.UpdateKiwi(ctx, data.ID.ValueString()).Kiwi(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	kiwiModelToResource(kiwi, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

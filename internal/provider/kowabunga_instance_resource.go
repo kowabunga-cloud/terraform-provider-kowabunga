@@ -248,12 +248,13 @@ func (r *InstanceResource) Update(ctx context.Context, req resource.UpdateReques
 	defer r.Data.Mutex.Unlock()
 
 	m := instanceResourceToModel(ctx, data)
-	_, _, err := r.Data.K.InstanceAPI.UpdateInstance(ctx, data.ID.ValueString()).Instance(m).Execute()
+	instance, _, err := r.Data.K.InstanceAPI.UpdateInstance(ctx, data.ID.ValueString()).Instance(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
 
+	instanceModelToResource(instance, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 

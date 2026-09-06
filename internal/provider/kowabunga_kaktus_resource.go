@@ -254,11 +254,13 @@ func (r *KaktusResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := kaktusResourceToModel(ctx, data)
-	_, _, err := r.Data.K.KaktusAPI.UpdateKaktus(ctx, data.ID.ValueString()).Kaktus(m).Execute()
+	kaktus, _, err := r.Data.K.KaktusAPI.UpdateKaktus(ctx, data.ID.ValueString()).Kaktus(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return
 	}
+
+	kaktusModelToResource(kaktus, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
