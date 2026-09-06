@@ -121,7 +121,7 @@ func (r *StorageNfsResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts NFS storage from Terraform model to Kowabunga API model

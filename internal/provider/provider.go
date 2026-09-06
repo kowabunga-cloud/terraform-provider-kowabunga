@@ -36,7 +36,6 @@ type KowabungaProviderModel struct {
 type KowabungaProviderData struct {
 	K     *sdk.APIClient
 	Mutex *sync.Mutex
-	Cond  *sync.Cond
 }
 
 type KowabungaProvider struct {
@@ -119,7 +118,6 @@ func (p *KowabungaProvider) Configure(ctx context.Context, req provider.Configur
 	var d = KowabungaProviderData{
 		K:     k,
 		Mutex: &mut,
-		Cond:  sync.NewCond(&mut),
 	}
 
 	p.Data = &d

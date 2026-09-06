@@ -88,7 +88,7 @@ func (r *TemplateResource) Schema(ctx context.Context, req resource.SchemaReques
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts template from Terraform model to Kowabunga API model

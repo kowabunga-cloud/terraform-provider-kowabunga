@@ -113,7 +113,7 @@ func (r *KaktusResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts kaktus from Terraform model to Kowabunga API model

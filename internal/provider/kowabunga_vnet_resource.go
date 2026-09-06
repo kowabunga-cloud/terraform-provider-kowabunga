@@ -91,7 +91,7 @@ func (r *VNetResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts virtual network from Terraform model to Kowabunga API model

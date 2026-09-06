@@ -69,7 +69,7 @@ func (r *AgentResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts agent from Terraform model to Kowabunga API model

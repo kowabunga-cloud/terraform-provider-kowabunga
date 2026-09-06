@@ -423,14 +423,14 @@ func (r *KawaiiResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			KeyVpcPeerings: r.SchemaVpcPeerings(),
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributesWithoutName(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributesWithoutName(ctx))
 }
 
 //////////////////////////////////////////////////////////////
 // converts kawaii from Terraform model to Kowabunga API model //
 //////////////////////////////////////////////////////////////
 
-func kawaiiNetipModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.KawaiiNetIp {
+func kawaiiNetipModel(ctx context.Context, d *KawaiiResourceModel) *sdk.KawaiiNetIp {
 	return &sdk.KawaiiNetIp{
 		Public:  []string{},
 		Private: []string{},
@@ -438,7 +438,7 @@ func kawaiiNetipModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.KawaiiN
 	}
 }
 
-func kawaiiFirewallModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.KawaiiFirewall {
+func kawaiiFirewallModel(ctx context.Context, d *KawaiiResourceModel) *sdk.KawaiiFirewall {
 	fwModel := sdk.KawaiiFirewall{
 		Ingress:      []sdk.KawaiiFirewallIngressRule{},
 		EgressPolicy: d.EgressPolicy.ValueStringPointer(),
@@ -447,21 +447,21 @@ func kawaiiFirewallModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.Kawa
 
 	// Ingress Rules
 	ingressRules := make([]types.Object, 0, len(d.IngressRules.Elements()))
-	ingressDiags := d.IngressRules.ElementsAs(*ctx, &ingressRules, false)
+	ingressDiags := d.IngressRules.ElementsAs(ctx, &ingressRules, false)
 	if ingressDiags.HasError() {
 		for _, err := range ingressDiags.Errors() {
-			tflog.Debug(*ctx, err.Detail())
+			tflog.Debug(ctx, err.Detail())
 		}
 	}
 	for _, ir := range ingressRules {
 		rule := KawaiiIngressRule{}
-		diags := ir.As(*ctx, &rule, basetypes.ObjectAsOptions{
+		diags := ir.As(ctx, &rule, basetypes.ObjectAsOptions{
 			UnhandledNullAsEmpty:    true,
 			UnhandledUnknownAsEmpty: true,
 		})
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Error(*ctx, err.Detail())
+				tflog.Error(ctx, err.Detail())
 			}
 		}
 
@@ -474,21 +474,21 @@ func kawaiiFirewallModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.Kawa
 
 	// Egress Rules
 	egressRules := make([]types.Object, 0, len(d.EgressRules.Elements()))
-	egressDiags := d.EgressRules.ElementsAs(*ctx, &egressRules, false)
+	egressDiags := d.EgressRules.ElementsAs(ctx, &egressRules, false)
 	if egressDiags.HasError() {
 		for _, err := range egressDiags.Errors() {
-			tflog.Debug(*ctx, err.Detail())
+			tflog.Debug(ctx, err.Detail())
 		}
 	}
 	for _, er := range egressRules {
 		rule := KawaiiEgressRule{}
-		diags := er.As(*ctx, &rule, basetypes.ObjectAsOptions{
+		diags := er.As(ctx, &rule, basetypes.ObjectAsOptions{
 			UnhandledNullAsEmpty:    true,
 			UnhandledUnknownAsEmpty: true,
 		})
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Error(*ctx, err.Detail())
+				tflog.Error(ctx, err.Detail())
 			}
 		}
 
@@ -502,26 +502,26 @@ func kawaiiFirewallModel(ctx *context.Context, d *KawaiiResourceModel) *sdk.Kawa
 	return &fwModel
 }
 
-func kawaiiNatRulesModel(ctx *context.Context, d *KawaiiResourceModel) []sdk.KawaiiDNatRule {
+func kawaiiNatRulesModel(ctx context.Context, d *KawaiiResourceModel) []sdk.KawaiiDNatRule {
 	natModel := []sdk.KawaiiDNatRule{}
 
 	rules := make([]types.Object, 0, len(d.NatRules.Elements()))
-	diags := d.NatRules.ElementsAs(*ctx, &rules, false)
+	diags := d.NatRules.ElementsAs(ctx, &rules, false)
 	if diags.HasError() {
 		for _, err := range diags.Errors() {
-			tflog.Debug(*ctx, err.Detail())
+			tflog.Debug(ctx, err.Detail())
 		}
 	}
 
 	for _, r := range rules {
 		rule := KawaiiNatRule{}
-		diags := r.As(*ctx, &rule, basetypes.ObjectAsOptions{
+		diags := r.As(ctx, &rule, basetypes.ObjectAsOptions{
 			UnhandledNullAsEmpty:    true,
 			UnhandledUnknownAsEmpty: true,
 		})
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Error(*ctx, err.Detail())
+				tflog.Error(ctx, err.Detail())
 			}
 		}
 		natModel = append(natModel, sdk.KawaiiDNatRule{
@@ -534,48 +534,48 @@ func kawaiiNatRulesModel(ctx *context.Context, d *KawaiiResourceModel) []sdk.Kaw
 	return natModel
 }
 
-func kawaiiVpcPeeringsModel(ctx *context.Context, d *KawaiiResourceModel) []sdk.KawaiiVpcPeering {
+func kawaiiVpcPeeringsModel(ctx context.Context, d *KawaiiResourceModel) []sdk.KawaiiVpcPeering {
 	vpModel := []sdk.KawaiiVpcPeering{}
 
 	peerings := make([]types.Object, 0, len(d.VpcPeerings.Elements()))
-	diags := d.VpcPeerings.ElementsAs(*ctx, &peerings, false)
+	diags := d.VpcPeerings.ElementsAs(ctx, &peerings, false)
 	if diags.HasError() {
 		for _, err := range diags.Errors() {
-			tflog.Debug(*ctx, err.Detail())
+			tflog.Debug(ctx, err.Detail())
 		}
 	}
 
 	for _, p := range peerings {
 		vp := KawaiiVpcPeering{}
-		diags := p.As(*ctx, &vp, basetypes.ObjectAsOptions{
+		diags := p.As(ctx, &vp, basetypes.ObjectAsOptions{
 			UnhandledNullAsEmpty:    true,
 			UnhandledUnknownAsEmpty: true,
 		})
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Error(*ctx, err.Detail())
+				tflog.Error(ctx, err.Detail())
 			}
 		}
 
 		// ingress rules
 		ingressModel := []sdk.KawaiiVpcForwardRule{}
 		ingressRules := make([]types.Object, 0, len(vp.IngressRules.Elements()))
-		ingressDiags := vp.IngressRules.ElementsAs(*ctx, &ingressRules, false)
+		ingressDiags := vp.IngressRules.ElementsAs(ctx, &ingressRules, false)
 		if ingressDiags.HasError() {
 			for _, err := range ingressDiags.Errors() {
-				tflog.Debug(*ctx, err.Detail())
+				tflog.Debug(ctx, err.Detail())
 			}
 		}
 
 		for _, ir := range ingressRules {
 			rule := KawaiiForwardRule{}
-			diags := ir.As(*ctx, &rule, basetypes.ObjectAsOptions{
+			diags := ir.As(ctx, &rule, basetypes.ObjectAsOptions{
 				UnhandledNullAsEmpty:    true,
 				UnhandledUnknownAsEmpty: true,
 			})
 			if diags.HasError() {
 				for _, err := range diags.Errors() {
-					tflog.Error(*ctx, err.Detail())
+					tflog.Error(ctx, err.Detail())
 				}
 			}
 
@@ -588,22 +588,22 @@ func kawaiiVpcPeeringsModel(ctx *context.Context, d *KawaiiResourceModel) []sdk.
 		// egress rules
 		egressModel := []sdk.KawaiiVpcForwardRule{}
 		egressRules := make([]types.Object, 0, len(vp.EgressRules.Elements()))
-		egressDiags := vp.EgressRules.ElementsAs(*ctx, &egressRules, false)
+		egressDiags := vp.EgressRules.ElementsAs(ctx, &egressRules, false)
 		if egressDiags.HasError() {
 			for _, err := range egressDiags.Errors() {
-				tflog.Debug(*ctx, err.Detail())
+				tflog.Debug(ctx, err.Detail())
 			}
 		}
 
 		for _, er := range egressRules {
 			rule := KawaiiForwardRule{}
-			diags := er.As(*ctx, &rule, basetypes.ObjectAsOptions{
+			diags := er.As(ctx, &rule, basetypes.ObjectAsOptions{
 				UnhandledNullAsEmpty:    true,
 				UnhandledUnknownAsEmpty: true,
 			})
 			if diags.HasError() {
 				for _, err := range diags.Errors() {
-					tflog.Error(*ctx, err.Detail())
+					tflog.Error(ctx, err.Detail())
 				}
 			}
 
@@ -624,7 +624,7 @@ func kawaiiVpcPeeringsModel(ctx *context.Context, d *KawaiiResourceModel) []sdk.
 	return vpModel
 }
 
-func kawaiiResourceToModel(ctx *context.Context, d *KawaiiResourceModel) sdk.Kawaii {
+func kawaiiResourceToModel(ctx context.Context, d *KawaiiResourceModel) sdk.Kawaii {
 	return sdk.Kawaii{
 		Description: d.Desc.ValueStringPointer(),
 		Netip:       kawaiiNetipModel(ctx, d),
@@ -638,7 +638,7 @@ func kawaiiResourceToModel(ctx *context.Context, d *KawaiiResourceModel) sdk.Kaw
 // converts Kawaii from Kowabunga API model to Terraform model //
 /////////////////////////////////////////////////////////////////
 
-func kawaiiModelToNetworkConfig(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
+func kawaiiModelToNetworkConfig(ctx context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
 	nc := map[string]attr.Value{}
 	ncType := map[string]attr.Type{
 		KeyPublicIPs: types.ListType{
@@ -698,7 +698,7 @@ func kawaiiModelToNetworkConfig(ctx *context.Context, r *sdk.Kawaii, d *KawaiiRe
 	d.NetworkCfg, _ = types.ObjectValue(ncType, nc)
 }
 
-func kawaiiModelToFirewall(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
+func kawaiiModelToFirewall(ctx context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
 	// ingress rules
 	ingressRules := []attr.Value{}
 	ingressRuleType := map[string]attr.Type{
@@ -771,7 +771,7 @@ func kawaiiModelToFirewall(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourc
 	}
 }
 
-func kawaiiModelToNatRules(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
+func kawaiiModelToNatRules(ctx context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
 	rules := []attr.Value{}
 	ruleType := map[string]attr.Type{
 		KeyDestination: types.StringType,
@@ -801,7 +801,7 @@ func kawaiiModelToNatRules(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourc
 	d.NatRules, _ = types.ListValue(types.ObjectType{AttrTypes: ruleType}, rules)
 }
 
-func kawaiiModelToVpcPeerings(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
+func kawaiiModelToVpcPeerings(ctx context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
 	vpc := []attr.Value{}
 	vpcType := map[string]attr.Type{
 		KeySubnet: types.StringType,
@@ -911,7 +911,7 @@ func kawaiiModelToVpcPeerings(ctx *context.Context, r *sdk.Kawaii, d *KawaiiReso
 	d.VpcPeerings, _ = types.ListValue(types.ObjectType{AttrTypes: vpcType}, vpc)
 }
 
-func kawaiiModelToResource(ctx *context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
+func kawaiiModelToResource(ctx context.Context, r *sdk.Kawaii, d *KawaiiResourceModel) {
 	if r == nil {
 		return
 	}
@@ -958,7 +958,7 @@ func (r *KawaiiResource) Create(ctx context.Context, req resource.CreateRequest,
 		errorCreateGeneric(resp, err)
 		return
 	}
-	m := kawaiiResourceToModel(&ctx, data)
+	m := kawaiiResourceToModel(ctx, data)
 
 	// create a new Kawaii
 	kawaii, _, err := r.Data.K.ProjectAPI.CreateProjectRegionKawaii(ctx, projectId, regionId).Kawaii(m).Execute()
@@ -967,7 +967,7 @@ func (r *KawaiiResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 	data.ID = types.StringPointerValue(kawaii.Id)
-	kawaiiModelToResource(&ctx, kawaii, data) // read back resulting object
+	kawaiiModelToResource(ctx, kawaii, data) // read back resulting object
 	tflog.Trace(ctx, "created Kawaii resource")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -996,7 +996,7 @@ func (r *KawaiiResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	kawaiiModelToResource(&ctx, kawaii, data)
+	kawaiiModelToResource(ctx, kawaii, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -1018,7 +1018,7 @@ func (r *KawaiiResource) Update(ctx context.Context, req resource.UpdateRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := kawaiiResourceToModel(&ctx, data)
+	m := kawaiiResourceToModel(ctx, data)
 	_, _, err := r.Data.K.KawaiiAPI.UpdateKawaii(ctx, data.ID.ValueString()).Kawaii(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

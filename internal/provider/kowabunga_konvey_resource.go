@@ -157,42 +157,42 @@ func (r *KonveyResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			KeyEndpoints: r.SchemaEndpoints(),
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 //////////////////////////////////////////////////////////////
 // converts konvey from Terraform model to Kowabunga API model //
 //////////////////////////////////////////////////////////////
 
-func konveyEndpointsModel(ctx *context.Context, d *KonveyResourceModel) []sdk.KonveyEndpoint {
+func konveyEndpointsModel(ctx context.Context, d *KonveyResourceModel) []sdk.KonveyEndpoint {
 	epModel := []sdk.KonveyEndpoint{}
 
 	endpoints := make([]types.Object, 0, len(d.Endpoints.Elements()))
-	diags := d.Endpoints.ElementsAs(*ctx, &endpoints, false)
+	diags := d.Endpoints.ElementsAs(ctx, &endpoints, false)
 	if diags.HasError() {
 		for _, err := range diags.Errors() {
-			tflog.Debug(*ctx, err.Detail())
+			tflog.Debug(ctx, err.Detail())
 		}
 	}
 
 	for _, e := range endpoints {
 		ep := KonveyEndpoint{}
-		diags := e.As(*ctx, &ep, basetypes.ObjectAsOptions{
+		diags := e.As(ctx, &ep, basetypes.ObjectAsOptions{
 			UnhandledNullAsEmpty:    true,
 			UnhandledUnknownAsEmpty: true,
 		})
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Error(*ctx, err.Detail())
+				tflog.Error(ctx, err.Detail())
 			}
 		}
 
 		// backends
 		hosts := make([]string, 0, len(ep.BackendIPs.Elements()))
-		diags = ep.BackendIPs.ElementsAs(*ctx, &hosts, false)
+		diags = ep.BackendIPs.ElementsAs(ctx, &hosts, false)
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Debug(*ctx, err.Detail())
+				tflog.Debug(ctx, err.Detail())
 			}
 		}
 
@@ -212,7 +212,7 @@ func konveyEndpointsModel(ctx *context.Context, d *KonveyResourceModel) []sdk.Ko
 	return epModel
 }
 
-func konveyResourceToModel(ctx *context.Context, d *KonveyResourceModel) sdk.Konvey {
+func konveyResourceToModel(ctx context.Context, d *KonveyResourceModel) sdk.Konvey {
 	return sdk.Konvey{
 		Name:        d.Name.ValueStringPointer(),
 		Description: d.Desc.ValueStringPointer(),
@@ -225,7 +225,7 @@ func konveyResourceToModel(ctx *context.Context, d *KonveyResourceModel) sdk.Kon
 // converts konvey from Kowabunga API model to Terraform model //
 //////////////////////////////////////////////////////////////
 
-func konveyModelToEndpoints(ctx *context.Context, r *sdk.Konvey, d *KonveyResourceModel) {
+func konveyModelToEndpoints(ctx context.Context, r *sdk.Konvey, d *KonveyResourceModel) {
 	endpoints := []attr.Value{}
 	endpointsType := map[string]attr.Type{
 		KeyName:        types.StringType,
@@ -264,7 +264,7 @@ func konveyModelToEndpoints(ctx *context.Context, r *sdk.Konvey, d *KonveyResour
 	d.Endpoints, _ = types.ListValue(types.ObjectType{AttrTypes: endpointsType}, endpoints)
 }
 
-func konveyModelToResource(ctx *context.Context, r *sdk.Konvey, d *KonveyResourceModel) {
+func konveyModelToResource(ctx context.Context, r *sdk.Konvey, d *KonveyResourceModel) {
 	if r == nil {
 		return
 	}
@@ -327,7 +327,7 @@ func (r *KonveyResource) Create(ctx context.Context, req resource.CreateRequest,
 		errorCreateGeneric(resp, err)
 		return
 	}
-	m := konveyResourceToModel(&ctx, data)
+	m := konveyResourceToModel(ctx, data)
 
 	// create a new Konvey
 	konvey, _, err := r.Data.K.ProjectAPI.CreateProjectRegionKonvey(ctx, projectId, regionId).Konvey(m).Execute()
@@ -336,7 +336,7 @@ func (r *KonveyResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 	data.ID = types.StringPointerValue(konvey.Id)
-	konveyModelToResource(&ctx, konvey, data) // read back resulting object
+	konveyModelToResource(ctx, konvey, data) // read back resulting object
 	tflog.Trace(ctx, "created Konvey resource")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -365,7 +365,7 @@ func (r *KonveyResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	konveyModelToResource(&ctx, konvey, data)
+	konveyModelToResource(ctx, konvey, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -387,7 +387,7 @@ func (r *KonveyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := konveyResourceToModel(&ctx, data)
+	m := konveyResourceToModel(ctx, data)
 	_, _, err := r.Data.K.KonveyAPI.UpdateKonvey(ctx, data.ID.ValueString()).Konvey(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

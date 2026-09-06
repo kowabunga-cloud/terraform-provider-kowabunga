@@ -194,7 +194,7 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts project from Terraform model to Kowabunga API model

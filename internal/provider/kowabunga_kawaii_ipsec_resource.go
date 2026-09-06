@@ -259,13 +259,13 @@ func (r *KawaiiIPsecConnectionResource) Schema(ctx context.Context, req resource
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // ////////////////////////////////////////////////////////////////////
 // converts kawaii Ipsec from Terraform model to Kowabunga API model //
 // ////////////////////////////////////////////////////////////////////
-func kawaiiIPsecResourceModel(ctx *context.Context, d *KawaiiIPsecConnectionResourceModel) sdk.KawaiiIpSec {
+func kawaiiIPsecResourceModel(ctx context.Context, d *KawaiiIPsecConnectionResourceModel) sdk.KawaiiIpSec {
 
 	return sdk.KawaiiIpSec{
 		Name:                      d.Name.ValueString(),
@@ -290,28 +290,28 @@ func kawaiiIPsecResourceModel(ctx *context.Context, d *KawaiiIPsecConnectionReso
 	}
 }
 
-func kawaiiIPsecFirewallModel(ctx *context.Context, d *KawaiiIPsecConnectionResourceModel) *sdk.KawaiiFirewall {
+func kawaiiIPsecFirewallModel(ctx context.Context, d *KawaiiIPsecConnectionResourceModel) *sdk.KawaiiFirewall {
 	fwModel := sdk.KawaiiFirewall{
 		Ingress: []sdk.KawaiiFirewallIngressRule{},
 	}
 
 	// Ingress Rules
 	ingressRules := make([]types.Object, 0, len(d.IngressRules.Elements()))
-	ingressDiags := d.IngressRules.ElementsAs(*ctx, &ingressRules, false)
+	ingressDiags := d.IngressRules.ElementsAs(ctx, &ingressRules, false)
 	if ingressDiags.HasError() {
 		for _, err := range ingressDiags.Errors() {
-			tflog.Debug(*ctx, err.Detail())
+			tflog.Debug(ctx, err.Detail())
 		}
 	}
 	for _, ir := range ingressRules {
 		rule := KawaiiIngressRule{}
-		diags := ir.As(*ctx, &rule, basetypes.ObjectAsOptions{
+		diags := ir.As(ctx, &rule, basetypes.ObjectAsOptions{
 			UnhandledNullAsEmpty:    true,
 			UnhandledUnknownAsEmpty: true,
 		})
 		if diags.HasError() {
 			for _, err := range diags.Errors() {
-				tflog.Error(*ctx, err.Detail())
+				tflog.Error(ctx, err.Detail())
 			}
 		}
 
@@ -328,7 +328,7 @@ func kawaiiIPsecFirewallModel(ctx *context.Context, d *KawaiiIPsecConnectionReso
 // converts Kawaii from Kowabunga API model to Terraform model //
 /////////////////////////////////////////////////////////////////
 
-func kawaiiIPsecModelToIngressRules(ctx *context.Context, r *sdk.KawaiiIpSec, d *KawaiiIPsecConnectionResourceModel) {
+func kawaiiIPsecModelToIngressRules(ctx context.Context, r *sdk.KawaiiIpSec, d *KawaiiIPsecConnectionResourceModel) {
 	// ingress rules
 	ingressRules := []attr.Value{}
 	ingressRuleType := map[string]attr.Type{
@@ -362,7 +362,7 @@ func kawaiiIPsecModelToIngressRules(ctx *context.Context, r *sdk.KawaiiIpSec, d 
 	}
 }
 
-func kawaiiIPsecModelToResource(ctx *context.Context, r *sdk.KawaiiIpSec, d *KawaiiIPsecConnectionResourceModel) {
+func kawaiiIPsecModelToResource(ctx context.Context, r *sdk.KawaiiIpSec, d *KawaiiIPsecConnectionResourceModel) {
 	if r == nil {
 		return
 	}
@@ -449,14 +449,14 @@ func (r *KawaiiIPsecConnectionResource) Create(ctx context.Context, req resource
 		return
 	}
 	// create a new Kawaii IPsec Connection
-	m := kawaiiIPsecResourceModel(&ctx, data)
+	m := kawaiiIPsecResourceModel(ctx, data)
 	kawaiiIpSec, _, err := r.Data.K.KawaiiAPI.CreateKawaiiIpSec(ctx, kawaiiId).KawaiiIpSec(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
 	}
 	data.ID = types.StringPointerValue(kawaiiIpSec.Id)
-	kawaiiIPsecModelToResource(&ctx, kawaiiIpSec, data) // read back resulting object
+	kawaiiIPsecModelToResource(ctx, kawaiiIpSec, data) // read back resulting object
 	tflog.Trace(ctx, "created Kawaii IPsec Tunnel resource")
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -485,7 +485,7 @@ func (r *KawaiiIPsecConnectionResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
-	kawaiiIPsecModelToResource(&ctx, kawaiiIpSec, data)
+	kawaiiIPsecModelToResource(ctx, kawaiiIpSec, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -507,7 +507,7 @@ func (r *KawaiiIPsecConnectionResource) Update(ctx context.Context, req resource
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	m := kawaiiIPsecResourceModel(&ctx, data)
+	m := kawaiiIPsecResourceModel(ctx, data)
 	_, _, err := r.Data.K.KawaiiAPI.UpdateKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).KawaiiIpSec(m).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)

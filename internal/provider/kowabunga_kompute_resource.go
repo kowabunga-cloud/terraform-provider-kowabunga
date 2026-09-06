@@ -140,7 +140,7 @@ func (r *KomputeResource) Schema(ctx context.Context, req resource.SchemaRequest
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts kompute from Terraform model to Kowabunga API model

@@ -119,7 +119,7 @@ func (r *SubnetResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts subnet from Terraform model to Kowabunga API model

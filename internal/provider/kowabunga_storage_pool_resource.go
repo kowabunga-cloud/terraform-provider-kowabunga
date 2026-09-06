@@ -131,7 +131,7 @@ func (r *StoragePoolResource) Schema(ctx context.Context, req resource.SchemaReq
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts storage pool from Terraform model to Kowabunga API model

@@ -79,7 +79,7 @@ func (r *DnsRecordResource) Schema(ctx context.Context, req resource.SchemaReque
 			},
 		},
 	}
-	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
+	maps.Copy(resp.Schema.Attributes, resourceAttributes(ctx))
 }
 
 // converts record from Terraform model to Kowabunga API model

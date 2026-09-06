@@ -207,7 +207,7 @@ func errorDeleteGeneric(resp *resource.DeleteResponse, err error) {
 	resp.Diagnostics.AddError(ErrorGeneric, err.Error())
 }
 
-func resourceAttributes(ctx *context.Context) map[string]schema.Attribute {
+func resourceAttributes(ctx context.Context) map[string]schema.Attribute {
 	defaultAttr := map[string]schema.Attribute{
 		KeyName: schema.StringAttribute{
 			MarkdownDescription: ResourceNameDescription,
@@ -219,7 +219,7 @@ func resourceAttributes(ctx *context.Context) map[string]schema.Attribute {
 	return defaultAttr
 }
 
-func resourceAttributesWithoutName(ctx *context.Context) map[string]schema.Attribute {
+func resourceAttributesWithoutName(ctx context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		KeyID: schema.StringAttribute{
 			Computed:            true,
@@ -237,7 +237,7 @@ func resourceAttributesWithoutName(ctx *context.Context) map[string]schema.Attri
 				stringplanmodifier.UseStateForUnknown(),
 			},
 		},
-		KeyTimeouts: timeouts.Attributes(*ctx, timeouts.Opts{
+		KeyTimeouts: timeouts.Attributes(ctx, timeouts.Opts{
 			Create:            true,
 			Read:              true,
 			Update:            true,
