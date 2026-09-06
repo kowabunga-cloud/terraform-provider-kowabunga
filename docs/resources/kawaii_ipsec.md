@@ -23,8 +23,8 @@ Kawaii list of Kowabunga IPsec Connections
 - `phase1_encryption_algorithm` (String) IPsec phase 1 Encryption Algorithm. Valid values are `AES128 | AES256 | CAMELLIA128 | CAMELLIA256`
 - `phase1_integrity_algorithm` (String) IPsec phase 1 Integrity Algorithm. Valid values are `SHA1 | SHA2-256 | SHA2-384 | SHA2-512`
 - `phase2_dh_group_number` (Number) IPsec phase 2 Diffie Hellman IANA Group Number. Valid values are `2 | 5 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24`
-- `phase2_encryption_algorithm` (String) IPsec phase 1 Encryption Algorithm. Valid values are `AES128 | AES256 | CAMELLIA128 | CAMELLIA256`
-- `phase2_integrity_algorithm` (String) IPsec phase 1 Integrity Algorithm. Valid values are `SHA1 | SHA2-256 | SHA2-384 | SHA2-512`
+- `phase2_encryption_algorithm` (String) IPsec phase 2 Encryption Algorithm. Valid values are `AES128 | AES256 | CAMELLIA128 | CAMELLIA256`
+- `phase2_integrity_algorithm` (String) IPsec phase 2 Integrity Algorithm. Valid values are `SHA1 | SHA2-256 | SHA2-384 | SHA2-512`
 - `pre_shared_key` (String) The Pre-Shared Key (PSK) to authenticate the VPN tunnel to your peer VPN gateway
 - `remote_peer` (String) Remote VPN Gateway
 - `remote_subnet` (String) Remote Subnet CIDR

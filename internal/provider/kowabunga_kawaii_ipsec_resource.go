@@ -40,7 +40,7 @@ const (
 	KawaiiIPsecDefaultPhaseLifetime = "1h"
 )
 
-var _ resource.Resource = &KawaiiResource{}
+var _ resource.Resource = &KawaiiIPsecConnectionResource{}
 var _ resource.ResourceWithImportState = &KawaiiIPsecConnectionResource{}
 
 func NewKawaiiIPsecResource() resource.Resource {
@@ -235,14 +235,14 @@ func (r *KawaiiIPsecConnectionResource) Schema(ctx context.Context, req resource
 				},
 			},
 			KeyIPsecP2IntegrityAlgorithm: schema.StringAttribute{
-				MarkdownDescription: "IPsec phase 1 Integrity Algorithm. Valid values are `SHA1 | SHA2-256 | SHA2-384 | SHA2-512`",
+				MarkdownDescription: "IPsec phase 2 Integrity Algorithm. Valid values are `SHA1 | SHA2-256 | SHA2-384 | SHA2-512`",
 				Required:            true,
 				Validators: []validator.String{
 					&integrityAlgorithmTypeValidator{},
 				},
 			},
 			KeyIPsecP2EncryptionAlgorithm: schema.StringAttribute{
-				MarkdownDescription: "IPsec phase 1 Encryption Algorithm. Valid values are `AES128 | AES256 | CAMELLIA128 | CAMELLIA256`",
+				MarkdownDescription: "IPsec phase 2 Encryption Algorithm. Valid values are `AES128 | AES256 | CAMELLIA128 | CAMELLIA256`",
 				Required:            true,
 				Validators: []validator.String{
 					&encryptionAlgorithmTypeValidator{},
@@ -383,12 +383,12 @@ func kawaiiIPsecModelToResource(ctx *context.Context, r *sdk.KawaiiIpSec, d *Kaw
 	if r.DpdTimeoutAction != nil {
 		d.DpdTimeoutAction = types.StringPointerValue(r.DpdTimeoutAction)
 	} else {
-		d.DpdTimeoutAction = types.StringValue(KawaiiIPsecDefaultDpdTimeout)
+		d.DpdTimeoutAction = types.StringValue(KawaiiIPsecDefaultDpdAction)
 	}
 	if r.DpdTimeout != nil {
 		d.DpdTimeout = types.StringPointerValue(r.DpdTimeout)
 	} else {
-		d.DpdTimeout = types.StringValue(KawaiiIPsecDefaultDpdAction)
+		d.DpdTimeout = types.StringValue(KawaiiIPsecDefaultDpdTimeout)
 	}
 	if r.StartAction != nil {
 		d.StartAction = types.StringPointerValue(r.StartAction)
