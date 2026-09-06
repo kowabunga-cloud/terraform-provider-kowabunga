@@ -64,7 +64,7 @@ func (v diffieHellmanAlgorithmTypeValidator) ValidateInt64(ctx context.Context, 
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
 			ValidatorAlgorithmErrUnsupported,
-			fmt.Sprintf("%s: %d", ValidatorDHAlgorithmDescription, req.ConfigValue.ValueInt64()),
+			fmt.Sprintf("%s. Got : %d", v.Description(ctx), req.ConfigValue.ValueInt64()),
 		)
 		return
 	}

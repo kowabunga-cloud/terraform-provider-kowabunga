@@ -39,11 +39,26 @@ func (v stringNetworkPortRangesValidator) ValidateString(ctx context.Context, re
 		return
 	}
 
-	portList := strings.Split(req.ConfigValue.ValueString(), ",")
+	raw := strings.TrimSpace(req.ConfigValue.ValueString())
+	if raw == "" {
+		resp.Diagnostics.AddAttributeError(
+			req.Path,
+			ValidatorNetworkPortsErrInvalidPort,
+			fmt.Sprintf("%s: empty port list", ValidatorNetworkPortsErrInvalidPort),
+		)
+		return
+	}
+
+	portList := strings.Split(raw, ",")
 	for _, port := range portList {
 		trimmedPort := strings.TrimSpace(port)
 		if trimmedPort == "" {
-			continue
+			resp.Diagnostics.AddAttributeError(
+				req.Path,
+				ValidatorNetworkPortsErrInvalidPort,
+				fmt.Sprintf("%s: empty port entry", ValidatorNetworkPortsErrInvalidPort),
+			)
+			return
 		}
 		portRanges := strings.Split(trimmedPort, "-") //returns at least 1 entry
 		if len(portRanges) > 2 {
