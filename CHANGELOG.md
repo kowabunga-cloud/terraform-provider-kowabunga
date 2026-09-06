@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.57.2](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.1...v0.57.2) (2026-09-06)
+
+### Chores
+
+* upgrade terraform-plugin-docs and transitive dependencies ([404811e](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/404811e2cf974edd0986b4edd46088a039f1c644))
+
 ## [0.57.1](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.0...v0.57.1) (2026-09-06)
 
 ### Bug Fixes
