@@ -220,9 +220,9 @@ func (r *InstanceResource) Read(ctx context.Context, req resource.ReadRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	instance, _, err := r.Data.K.InstanceAPI.ReadInstance(ctx, data.ID.ValueString()).Execute()
+	instance, httpResp, err := r.Data.K.InstanceAPI.ReadInstance(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 	instanceModelToResource(instance, data)
@@ -275,9 +275,9 @@ func (r *InstanceResource) Delete(ctx context.Context, req resource.DeleteReques
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.InstanceAPI.DeleteInstance(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.InstanceAPI.DeleteInstance(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

@@ -225,9 +225,9 @@ func (r *KaktusResource) Read(ctx context.Context, req resource.ReadRequest, res
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	kaktus, _, err := r.Data.K.KaktusAPI.ReadKaktus(ctx, data.ID.ValueString()).Execute()
+	kaktus, httpResp, err := r.Data.K.KaktusAPI.ReadKaktus(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -281,9 +281,9 @@ func (r *KaktusResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.KaktusAPI.DeleteKaktus(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.KaktusAPI.DeleteKaktus(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

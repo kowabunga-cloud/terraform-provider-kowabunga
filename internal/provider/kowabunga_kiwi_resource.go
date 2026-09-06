@@ -161,9 +161,9 @@ func (r *KiwiResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	kiwi, _, err := r.Data.K.KiwiAPI.ReadKiwi(ctx, data.ID.ValueString()).Execute()
+	kiwi, httpResp, err := r.Data.K.KiwiAPI.ReadKiwi(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -218,9 +218,9 @@ func (r *KiwiResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.KiwiAPI.DeleteKiwi(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.KiwiAPI.DeleteKiwi(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

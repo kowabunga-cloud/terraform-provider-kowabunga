@@ -188,9 +188,9 @@ func (r *UserResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	user, _, err := r.Data.K.UserAPI.ReadUser(ctx, data.ID.ValueString()).Execute()
+	user, httpResp, err := r.Data.K.UserAPI.ReadUser(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -244,9 +244,9 @@ func (r *UserResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.UserAPI.DeleteUser(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.UserAPI.DeleteUser(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

@@ -359,9 +359,9 @@ func (r *KonveyResource) Read(ctx context.Context, req resource.ReadRequest, res
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	konvey, _, err := r.Data.K.KonveyAPI.ReadKonvey(ctx, data.ID.ValueString()).Execute()
+	konvey, httpResp, err := r.Data.K.KonveyAPI.ReadKonvey(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -416,9 +416,9 @@ func (r *KonveyResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.KonveyAPI.DeleteKonvey(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.KonveyAPI.DeleteKonvey(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

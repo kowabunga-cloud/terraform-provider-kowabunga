@@ -479,9 +479,9 @@ func (r *KawaiiIPsecConnectionResource) Read(ctx context.Context, req resource.R
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	kawaiiIpSec, _, err := r.Data.K.KawaiiAPI.ReadKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).Execute()
+	kawaiiIpSec, httpResp, err := r.Data.K.KawaiiAPI.ReadKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -536,9 +536,9 @@ func (r *KawaiiIPsecConnectionResource) Delete(ctx context.Context, req resource
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.KawaiiAPI.DeleteKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.KawaiiAPI.DeleteKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

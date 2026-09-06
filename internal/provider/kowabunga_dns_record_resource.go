@@ -202,10 +202,10 @@ func (r *DnsRecordResource) Read(ctx context.Context, req resource.ReadRequest, 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	record, _, err := r.Data.K.RecordAPI.ReadDnsRecord(ctx, data.ID.ValueString()).Execute()
+	record, httpResp, err := r.Data.K.RecordAPI.ReadDnsRecord(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
 		tflog.Trace(ctx, err.Error())
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -253,15 +253,15 @@ func (r *DnsRecordResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	_, cancel := context.WithTimeout(ctx, timeout)
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.RecordAPI.DeleteDnsRecord(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.RecordAPI.DeleteDnsRecord(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

@@ -258,9 +258,9 @@ func (r *StoragePoolResource) Read(ctx context.Context, req resource.ReadRequest
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	pool, _, err := r.Data.K.PoolAPI.ReadStoragePool(ctx, data.ID.ValueString()).Execute()
+	pool, httpResp, err := r.Data.K.PoolAPI.ReadStoragePool(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -315,9 +315,9 @@ func (r *StoragePoolResource) Delete(ctx context.Context, req resource.DeleteReq
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.PoolAPI.DeleteStoragePool(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.PoolAPI.DeleteStoragePool(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

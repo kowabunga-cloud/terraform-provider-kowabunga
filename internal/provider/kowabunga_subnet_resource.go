@@ -281,9 +281,9 @@ func (r *SubnetResource) Read(ctx context.Context, req resource.ReadRequest, res
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	subnet, _, err := r.Data.K.SubnetAPI.ReadSubnet(ctx, data.ID.ValueString()).Execute()
+	subnet, httpResp, err := r.Data.K.SubnetAPI.ReadSubnet(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -338,9 +338,9 @@ func (r *SubnetResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.SubnetAPI.DeleteSubnet(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.SubnetAPI.DeleteSubnet(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

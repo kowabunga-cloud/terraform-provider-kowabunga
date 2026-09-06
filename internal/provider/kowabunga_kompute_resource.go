@@ -283,9 +283,9 @@ func (r *KomputeResource) Read(ctx context.Context, req resource.ReadRequest, re
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	kompute, _, err := r.Data.K.KomputeAPI.ReadKompute(ctx, data.ID.ValueString()).Execute()
+	kompute, httpResp, err := r.Data.K.KomputeAPI.ReadKompute(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -338,9 +338,9 @@ func (r *KomputeResource) Delete(ctx context.Context, req resource.DeleteRequest
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.KomputeAPI.DeleteKompute(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.KomputeAPI.DeleteKompute(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

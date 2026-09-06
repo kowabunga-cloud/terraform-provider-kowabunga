@@ -293,9 +293,9 @@ func (r *AdapterResource) Read(ctx context.Context, req resource.ReadRequest, re
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	adapter, _, err := r.Data.K.AdapterAPI.ReadAdapter(ctx, data.ID.ValueString()).Execute()
+	adapter, httpResp, err := r.Data.K.AdapterAPI.ReadAdapter(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 	adapterModelToResource(adapter, data)
@@ -359,9 +359,9 @@ func (r *AdapterResource) Delete(ctx context.Context, req resource.DeleteRequest
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.AdapterAPI.DeleteAdapter(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.AdapterAPI.DeleteAdapter(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

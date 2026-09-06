@@ -150,9 +150,9 @@ func (r *TeamResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	team, _, err := r.Data.K.TeamAPI.ReadTeam(ctx, data.ID.ValueString()).Execute()
+	team, httpResp, err := r.Data.K.TeamAPI.ReadTeam(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -206,9 +206,9 @@ func (r *TeamResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.TeamAPI.DeleteTeam(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.TeamAPI.DeleteTeam(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

@@ -249,9 +249,9 @@ func (r *StorageNfsResource) Read(ctx context.Context, req resource.ReadRequest,
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	nfs, _, err := r.Data.K.NfsAPI.ReadStorageNFS(ctx, data.ID.ValueString()).Execute()
+	nfs, httpResp, err := r.Data.K.NfsAPI.ReadStorageNFS(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -306,9 +306,9 @@ func (r *StorageNfsResource) Delete(ctx context.Context, req resource.DeleteRequ
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.NfsAPI.DeleteStorageNFS(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.NfsAPI.DeleteStorageNFS(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

@@ -185,9 +185,9 @@ func (r *TemplateResource) Read(ctx context.Context, req resource.ReadRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	template, _, err := r.Data.K.TemplateAPI.ReadTemplate(ctx, data.ID.ValueString()).Execute()
+	template, httpResp, err := r.Data.K.TemplateAPI.ReadTemplate(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -240,9 +240,9 @@ func (r *TemplateResource) Delete(ctx context.Context, req resource.DeleteReques
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.TemplateAPI.DeleteTemplate(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.TemplateAPI.DeleteTemplate(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

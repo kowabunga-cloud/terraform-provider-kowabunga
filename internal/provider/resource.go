@@ -8,9 +8,13 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"maps"
+	"net/http"
 	"time"
+
+	sdk "github.com/kowabunga-cloud/kowabunga-go"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -205,6 +209,34 @@ func errorUpdateGeneric(resp *resource.UpdateResponse, err error) {
 
 func errorDeleteGeneric(resp *resource.DeleteResponse, err error) {
 	resp.Diagnostics.AddError(ErrorGeneric, err.Error())
+}
+
+func isNotFoundError(httpResp *http.Response, err error) bool {
+	if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
+		return true
+	}
+	var openAPIErr *sdk.GenericOpenAPIError
+	if errors.As(err, &openAPIErr) {
+		if _, ok := openAPIErr.Model().(sdk.ApiErrorNotFound); ok {
+			return true
+		}
+	}
+	return false
+}
+
+func handleReadError(ctx context.Context, resp *resource.ReadResponse, httpResp *http.Response, err error) {
+	if isNotFoundError(httpResp, err) {
+		resp.State.RemoveResource(ctx)
+		return
+	}
+	errorReadGeneric(resp, err)
+}
+
+func handleDeleteError(resp *resource.DeleteResponse, httpResp *http.Response, err error) {
+	if isNotFoundError(httpResp, err) {
+		return
+	}
+	errorDeleteGeneric(resp, err)
 }
 
 func resourceAttributes(ctx context.Context) map[string]schema.Attribute {

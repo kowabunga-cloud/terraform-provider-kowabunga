@@ -241,9 +241,9 @@ func (r *KyloResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	kylo, _, err := r.Data.K.KyloAPI.ReadKylo(ctx, data.ID.ValueString()).Execute()
+	kylo, httpResp, err := r.Data.K.KyloAPI.ReadKylo(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -297,9 +297,9 @@ func (r *KyloResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.KyloAPI.DeleteKylo(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.KyloAPI.DeleteKylo(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())

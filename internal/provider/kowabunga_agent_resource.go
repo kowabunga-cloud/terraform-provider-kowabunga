@@ -151,9 +151,9 @@ func (r *AgentResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	agent, _, err := r.Data.K.AgentAPI.ReadAgent(ctx, data.ID.ValueString()).Execute()
+	agent, httpResp, err := r.Data.K.AgentAPI.ReadAgent(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorReadGeneric(resp, err)
+		handleReadError(ctx, resp, httpResp, err)
 		return
 	}
 
@@ -207,9 +207,9 @@ func (r *AgentResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	r.Data.Mutex.Lock()
 	defer r.Data.Mutex.Unlock()
 
-	_, err := r.Data.K.AgentAPI.DeleteAgent(ctx, data.ID.ValueString()).Execute()
+	httpResp, err := r.Data.K.AgentAPI.DeleteAgent(ctx, data.ID.ValueString()).Execute()
 	if err != nil {
-		errorDeleteGeneric(resp, err)
+		handleDeleteError(resp, httpResp, err)
 		return
 	}
 	tflog.Trace(ctx, "Deleted "+data.ID.ValueString())
