@@ -37,17 +37,7 @@ func (v stringUserEmailValidator) ValidateString(ctx context.Context, req valida
 		return
 	}
 
-	verifier := emailverifier.NewVerifier()
-	ret, err := verifier.Verify(req.ConfigValue.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(
-			req.Path,
-			ValidatorUserEmailErrUnsupported,
-			fmt.Sprintf("%s: %s", ValidatorUserEmailErrUnsupported, req.ConfigValue.ValueString()),
-		)
-		return
-	}
-	if !ret.Syntax.Valid {
+	if !emailverifier.IsAddressValid(req.ConfigValue.ValueString()) {
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
 			ValidatorUserEmailErrMalformed,
