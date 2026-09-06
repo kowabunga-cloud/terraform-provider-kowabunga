@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.57.6](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.5...v0.57.6) (2026-09-06)
+
+### Chores
+
+* require go 1.27 ([8cd463b](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/8cd463bc664792f0a367d0694a199e11ec27f61f))
+* update dependencies ([020c9e9](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/020c9e94672a0dea34f7930d270c07e771800cfe))
+
 ## [0.57.5](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.4...v0.57.5) (2026-09-06)
 
 ### Bug Fixes
