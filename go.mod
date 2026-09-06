@@ -1,6 +1,6 @@
 module github.com/kowabunga-cloud/terraform-provider-kowabunga
 
-go 1.26.0
+go 1.27.0
 
 require (
 	github.com/3th1nk/cidr v0.3.0
