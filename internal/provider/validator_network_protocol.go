@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	ValidatorNetworkProtocolDescription    = "Protocol must be one of 'udp, 'tcp'"
+	ValidatorNetworkProtocolDescription    = "Protocol must be one of 'udp', 'tcp'"
 	ValidatorNetworkProtocolErrUnsupported = "Unsupported protocol"
 )
 

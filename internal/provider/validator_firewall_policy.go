@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	ValidatorFirewallPolicyDescription    = "Protocol must be one of 'accept', 'drop'"
+	ValidatorFirewallPolicyDescription    = "Policy must be one of 'accept', 'drop'"
 	ValidatorFirewallPolicyErrUnsupported = "Unsupported policy"
 )
 
@@ -40,12 +40,12 @@ func (v stringFirewallPolicyValidator) ValidateString(ctx context.Context, req v
 		return
 	}
 
-	protocol := req.ConfigValue.ValueString()
-	if !slices.Contains(firewallSupportedPolicy, protocol) {
+	policy := req.ConfigValue.ValueString()
+	if !slices.Contains(firewallSupportedPolicy, policy) {
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
 			ValidatorFirewallPolicyErrUnsupported,
-			fmt.Sprintf("%s: %s", ValidatorFirewallPolicyErrUnsupported, protocol),
+			fmt.Sprintf("%s: %s", ValidatorFirewallPolicyErrUnsupported, policy),
 		)
 	}
 }

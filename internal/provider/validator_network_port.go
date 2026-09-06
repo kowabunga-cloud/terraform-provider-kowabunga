@@ -38,7 +38,7 @@ func (v intNetworkPortValidator) ValidateInt64(ctx context.Context, req validato
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
 			ValidatorNetworkPortErrOutsideRange,
-			fmt.Sprintf("%s: %d", ValidatorNetworkPortsErrOutsideRange, port),
+			fmt.Sprintf("%s: %d", ValidatorNetworkPortErrOutsideRange, port),
 		)
 		return
 	}

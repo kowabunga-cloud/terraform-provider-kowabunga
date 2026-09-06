@@ -43,7 +43,11 @@ var diffieHellmanSupportedTypes = []int64{
 type diffieHellmanAlgorithmTypeValidator struct{}
 
 func (v diffieHellmanAlgorithmTypeValidator) Description(ctx context.Context) string {
-	return ValidatorIntegrityAlgorithmDescription + strings.Join(integritySupportedTypes, ", ")
+	dhStrings := make([]string, len(diffieHellmanSupportedTypes))
+	for i, t := range diffieHellmanSupportedTypes {
+		dhStrings[i] = fmt.Sprintf("%d", t)
+	}
+	return ValidatorDHAlgorithmDescription + strings.Join(dhStrings, ", ")
 }
 
 func (v diffieHellmanAlgorithmTypeValidator) MarkdownDescription(ctx context.Context) string {
@@ -95,7 +99,7 @@ func (v integrityAlgorithmTypeValidator) ValidateString(ctx context.Context, req
 type encryptionAlgorithmTypeValidator struct{}
 
 func (v encryptionAlgorithmTypeValidator) Description(ctx context.Context) string {
-	return ValidatorAgentTypeDescription + strings.Join(encryptionSupportedTypes, ", ")
+	return ValidatorEncryptionAlgorithmDescription + strings.Join(encryptionSupportedTypes, ", ")
 }
 
 func (v encryptionAlgorithmTypeValidator) MarkdownDescription(ctx context.Context) string {

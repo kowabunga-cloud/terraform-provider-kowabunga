@@ -19,6 +19,8 @@ const (
 	ValidatorDurationErrUnsupported = "Unsupported duration"
 )
 
+var durationRegex = regexp.MustCompile(`^[0-9]+[smhd]?$`)
+
 type stringDurationValidator struct{}
 
 func (v stringDurationValidator) Description(ctx context.Context) string {
@@ -35,9 +37,7 @@ func (v stringDurationValidator) ValidateString(ctx context.Context, req validat
 		return
 	}
 
-	match := false
-	match, err := regexp.MatchString("[0-9]+['s'-'m'-'h'-'d']", req.ConfigValue.ValueString())
-	if err != nil || !match {
+	if !durationRegex.MatchString(req.ConfigValue.ValueString()) {
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
 			ValidatorDurationErrUnsupported,
@@ -45,5 +45,4 @@ func (v stringDurationValidator) ValidateString(ctx context.Context, req validat
 		)
 		return
 	}
-
 }

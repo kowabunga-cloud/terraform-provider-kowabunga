@@ -36,11 +36,13 @@ func (v stringNetworkAddressValidator) ValidateString(ctx context.Context, req v
 	}
 
 	ip := req.ConfigValue.ValueString()
-	valid_ip := (net.ParseIP(ip) != nil)
-	valid_cidr := true
-	_, _, err := net.ParseCIDR(ip)
-	if err != nil {
-		valid_cidr = false
+	parsedIP := net.ParseIP(ip)
+	valid_ip := parsedIP != nil && parsedIP.To4() != nil
+
+	valid_cidr := false
+	parsedCIDRIP, _, err := net.ParseCIDR(ip)
+	if err == nil && parsedCIDRIP != nil && parsedCIDRIP.To4() != nil {
+		valid_cidr = true
 	}
 
 	if !valid_ip && !valid_cidr {

@@ -21,7 +21,7 @@ const (
 	ValidatorNetworkPortsErrInvalidRange   = "Invalid range"
 	ValidatorNetworkPortsErrTooManyEntries = "Too many entries in range"
 	ValidatorNetworkPortsErrOutsideRange   = "Port outside range (0-65535) for port"
-	ValidatorNetworkPortsErrBogusRange     = "Left hand side is superior than righ hand side"
+	ValidatorNetworkPortsErrBogusRange     = "Left hand side is superior than right hand side"
 )
 
 type stringNetworkPortRangesValidator struct{}
@@ -41,39 +41,43 @@ func (v stringNetworkPortRangesValidator) ValidateString(ctx context.Context, re
 
 	portList := strings.Split(req.ConfigValue.ValueString(), ",")
 	for _, port := range portList {
-		portRanges := strings.Split(port, "-") //returns at least 1 entry
+		trimmedPort := strings.TrimSpace(port)
+		if trimmedPort == "" {
+			continue
+		}
+		portRanges := strings.Split(trimmedPort, "-") //returns at least 1 entry
 		if len(portRanges) > 2 {
 			resp.Diagnostics.AddAttributeError(
 				req.Path,
 				ValidatorNetworkPortsErrTooManyEntries,
-				fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrTooManyEntries, port),
+				fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrTooManyEntries, trimmedPort),
 			)
 			return
 		}
-		_, err := strconv.ParseUint(portRanges[0], 10, 16)
+		p0, err := strconv.ParseUint(strings.TrimSpace(portRanges[0]), 10, 16)
 		if err != nil {
 			resp.Diagnostics.AddAttributeError(
 				req.Path,
 				ValidatorNetworkPortsErrInvalidPort,
-				fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrOutsideRange, portRanges[0]),
+				fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrOutsideRange, strings.TrimSpace(portRanges[0])),
 			)
 			return
 		}
-		if len(portRanges) == 2 && err == nil {
-			_, err = strconv.ParseUint(portRanges[1], 10, 16)
+		if len(portRanges) == 2 {
+			p1, err := strconv.ParseUint(strings.TrimSpace(portRanges[1]), 10, 16)
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					req.Path,
 					ValidatorNetworkPortsErrInvalidPort,
-					fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrOutsideRange, portRanges[1]),
+					fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrOutsideRange, strings.TrimSpace(portRanges[1])),
 				)
 				return
 			}
-			if portRanges[0] > portRanges[1] {
+			if p0 > p1 {
 				resp.Diagnostics.AddAttributeError(
 					req.Path,
 					ValidatorNetworkPortsErrInvalidRange,
-					fmt.Sprintf("%s: %s ", ValidatorNetworkPortsErrBogusRange, port),
+					fmt.Sprintf("%s: %s", ValidatorNetworkPortsErrBogusRange, trimmedPort),
 				)
 				return
 			}
