@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.57.4](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.3...v0.57.4) (2026-09-06)
+
+### Bug Fixes
+
+* correct teams datasource schema mapping and handle not found errors ([899add5](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/899add5439c9ea75691805fb4f47cfdb893dc0c2))
+* correct validation logic, descriptions and regexes across validators ([3302fe5](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/3302fe540b4ac958f48ce5cb60f3131ffba50393))
+* enforce non-empty ports in range validator and align DH error format ([e991f64](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/e991f64a3f680ad98063c7dbfa2250008d2b8d5a))
+* handle 404 not found in resource read and delete operations ([66c2a0b](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/66c2a0bed6e896560ac92d937eb497399224129c))
+* improve match detection and nil safety in subnet datasource ([0aaa7e9](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/0aaa7e9d2a1bde14454cab6b37bc99b7139dca76))
+* propagate errors on optional parent resource lookup failures ([4f8a515](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/4f8a515097b75e6bdff7418ae8f7a9890573e8dc))
+* synchronize state from API response during resource update ([70fd9ec](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/70fd9ec031b78124dd1d4db78e75e5a58eafa6bd))
+* use fast syntax validation for email validator ([c04c20c](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/c04c20caea6a50ec1939ca626d48b10b56f01d55))
+
 ## [0.57.3](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.2...v0.57.3) (2026-09-06)
 
 ### Chores
