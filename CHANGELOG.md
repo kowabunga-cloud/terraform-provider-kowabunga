@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.57.5](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.4...v0.57.5) (2026-09-06)
+
+### Bug Fixes
+
+* update gosec and govulncheck to latest tooling versions ([4f804b8](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/4f804b827f6053e1e97bf9f335d5d56eaee4c7d6))
+
 ## [0.57.4](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.3...v0.57.4) (2026-09-06)
 
 ### Bug Fixes
