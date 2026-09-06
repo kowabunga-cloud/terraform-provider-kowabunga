@@ -57,7 +57,7 @@ func (d *SubnetsDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	data.Subnets = map[string]types.String{}
 	for _, rg := range subnets {
 		r, _, err := d.Data.K.SubnetAPI.ReadSubnet(ctx, rg).Execute()
-		if err != nil {
+		if err != nil || r == nil || r.Id == nil {
 			continue
 		}
 		data.Subnets[r.Name] = types.StringPointerValue(r.Id)

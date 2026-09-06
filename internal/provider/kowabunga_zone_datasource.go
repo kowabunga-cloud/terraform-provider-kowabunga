@@ -49,18 +49,12 @@ func (d *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	d.Data.Mutex.Lock()
 	defer d.Data.Mutex.Unlock()
 
-	zones, _, err := d.Data.K.ZoneAPI.ListZones(ctx).Execute()
+	id, err := getZoneID(ctx, d.Data, data.Name.ValueString())
 	if err != nil {
 		errorDataSourceReadGeneric(resp, err)
 		return
 	}
-	for _, rg := range zones {
-		r, _, err := d.Data.K.ZoneAPI.ReadZone(ctx, rg).Execute()
-		if err == nil && r.Name == data.Name.ValueString() {
-			data.ID = types.StringPointerValue(r.Id)
-			break
-		}
-	}
+	data.ID = types.StringValue(id)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

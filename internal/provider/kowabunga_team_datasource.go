@@ -49,18 +49,12 @@ func (d *TeamDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	d.Data.Mutex.Lock()
 	defer d.Data.Mutex.Unlock()
 
-	groups, _, err := d.Data.K.TeamAPI.ListTeams(ctx).Execute()
+	id, err := getTeamID(ctx, d.Data, data.Name.ValueString())
 	if err != nil {
 		errorDataSourceReadGeneric(resp, err)
 		return
 	}
-	for _, rg := range groups {
-		r, _, err := d.Data.K.TeamAPI.ReadTeam(ctx, rg).Execute()
-		if err == nil && r.Name == data.Name.ValueString() {
-			data.ID = types.StringPointerValue(r.Id)
-			break
-		}
-	}
+	data.ID = types.StringValue(id)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

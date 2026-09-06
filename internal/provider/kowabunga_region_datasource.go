@@ -49,18 +49,12 @@ func (d *RegionDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	d.Data.Mutex.Lock()
 	defer d.Data.Mutex.Unlock()
 
-	regions, _, err := d.Data.K.RegionAPI.ListRegions(ctx).Execute()
+	id, err := getRegionID(ctx, d.Data, data.Name.ValueString())
 	if err != nil {
 		errorDataSourceReadGeneric(resp, err)
 		return
 	}
-	for _, rg := range regions {
-		r, _, err := d.Data.K.RegionAPI.ReadRegion(ctx, rg).Execute()
-		if err == nil && r.Name == data.Name.ValueString() {
-			data.ID = types.StringPointerValue(r.Id)
-			break
-		}
-	}
+	data.ID = types.StringValue(id)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

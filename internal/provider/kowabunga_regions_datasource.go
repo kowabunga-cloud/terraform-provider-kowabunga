@@ -57,7 +57,7 @@ func (d *RegionsDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	data.Regions = map[string]types.String{}
 	for _, rg := range regions {
 		r, _, err := d.Data.K.RegionAPI.ReadRegion(ctx, rg).Execute()
-		if err != nil {
+		if err != nil || r == nil || r.Id == nil {
 			continue
 		}
 		data.Regions[r.Name] = types.StringPointerValue(r.Id)

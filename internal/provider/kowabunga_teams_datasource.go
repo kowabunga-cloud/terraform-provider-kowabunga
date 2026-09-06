@@ -29,7 +29,7 @@ type TeamsDataSource struct {
 }
 
 type TeamsDataSourceModel struct {
-	Teams map[string]types.String `tfsdk:"groups"`
+	Teams map[string]types.String `tfsdk:"teams"`
 }
 
 func (d *TeamsDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -49,15 +49,15 @@ func (d *TeamsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	d.Data.Mutex.Lock()
 	defer d.Data.Mutex.Unlock()
 
-	groups, _, err := d.Data.K.TeamAPI.ListTeams(ctx).Execute()
+	teams, _, err := d.Data.K.TeamAPI.ListTeams(ctx).Execute()
 	if err != nil {
 		errorDataSourceReadGeneric(resp, err)
 		return
 	}
 	data.Teams = map[string]types.String{}
-	for _, rg := range groups {
-		r, _, err := d.Data.K.TeamAPI.ReadTeam(ctx, rg).Execute()
-		if err != nil {
+	for _, tn := range teams {
+		r, _, err := d.Data.K.TeamAPI.ReadTeam(ctx, tn).Execute()
+		if err != nil || r == nil || r.Id == nil {
 			continue
 		}
 		data.Teams[r.Name] = types.StringPointerValue(r.Id)

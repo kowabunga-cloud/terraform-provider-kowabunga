@@ -90,7 +90,7 @@ func (d *ZonesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	data.Zones = map[string]types.String{}
 	for _, rg := range zones {
 		r, _, err := d.Data.K.ZoneAPI.ReadZone(ctx, rg).Execute()
-		if err != nil {
+		if err != nil || r == nil || r.Id == nil {
 			continue
 		}
 		data.Zones[r.Name] = types.StringPointerValue(r.Id)

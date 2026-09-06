@@ -89,7 +89,7 @@ func (d *SubnetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	// check that no all arguments has been passed over
+	// check that not all arguments have been passed over
 	if data.Name.ValueString() != "" && data.App.ValueString() != "" {
 		resp.Diagnostics.AddError(ErrorGeneric, SubnetDataSourceErrTooManyArguments)
 		return
@@ -102,9 +102,8 @@ func (d *SubnetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	for _, rg := range subnets {
 		r, _, err := d.Data.K.SubnetAPI.ReadSubnet(ctx, rg).Execute()
-		if err != nil {
-			errorDataSourceReadGeneric(resp, err)
-			return
+		if err != nil || r == nil {
+			continue
 		}
 
 		// request by name
@@ -124,6 +123,11 @@ func (d *SubnetDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			data.Name = types.StringValue(r.Name)
 			break
 		}
+	}
+
+	if data.ID.IsNull() {
+		resp.Diagnostics.AddError(ErrorGeneric, ErrorUnknownSubnet)
+		return
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)

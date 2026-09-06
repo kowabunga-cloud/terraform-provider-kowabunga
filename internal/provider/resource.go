@@ -170,6 +170,7 @@ const (
 	ErrorUnknownVNet          = "Unknown virtual network"
 	ErrorUnknownTemplate      = "Unknown volume template"
 	ErrorUnknownZone          = "Unknown zone"
+	ErrorUnknownTeam          = "Unknown team"
 )
 
 const (
@@ -485,4 +486,26 @@ func getKawaiiID(ctx context.Context, data *KowabungaProviderData, id string) (s
 		}
 	}
 	return "", fmt.Errorf("%s", ErrorUnknownKawaii)
+}
+
+func getTeamID(ctx context.Context, data *KowabungaProviderData, id string) (string, error) {
+	if id == "" {
+		return "", fmt.Errorf("%s", ErrorUnknownTeam)
+	}
+	team, _, err := data.K.TeamAPI.ReadTeam(ctx, id).Execute()
+	if err == nil && team != nil && team.Id != nil {
+		return *team.Id, nil
+	}
+
+	// fall back, it may be a team name then, finds its associated ID
+	teams, _, err := data.K.TeamAPI.ListTeams(ctx).Execute()
+	if err == nil {
+		for _, tn := range teams {
+			t, _, err := data.K.TeamAPI.ReadTeam(ctx, tn).Execute()
+			if err == nil && t != nil && t.Name == id && t.Id != nil {
+				return *t.Id, nil
+			}
+		}
+	}
+	return "", fmt.Errorf("%s", ErrorUnknownTeam)
 }
