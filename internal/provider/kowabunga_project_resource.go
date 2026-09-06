@@ -34,7 +34,7 @@ const (
 	ProjectResourceName = "project"
 
 	ProjectDefaultValueDomain       = ""
-	ProjecDefaultValueSubnetSize    = 26
+	ProjectDefaultValueSubnetSize   = 26
 	ProjectDefaultValueRootPassword = ""
 	ProjectDefaultValueMaxInstances = 0
 	ProjectDefaultValueMaxMemory    = 0
@@ -105,7 +105,7 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 				MarkdownDescription: "Project requested VPC subnet size (defaults to /26)",
 				Computed:            true,
 				Optional:            true,
-				Default:             int64default.StaticInt64(ProjecDefaultValueSubnetSize),
+				Default:             int64default.StaticInt64(ProjectDefaultValueSubnetSize),
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
@@ -292,22 +292,22 @@ func projectModelToResource(r *sdk.Project, d *ProjectResourceModel) {
 	}
 	d.Metadatas = basetypes.NewMapValueMust(types.StringType, metadatas)
 
-	if r.Quotas.Instances != nil {
+	if r.Quotas != nil && r.Quotas.Instances != nil {
 		d.MaxInstances = types.Int64Value(int64(*r.Quotas.Instances))
 	} else {
 		d.MaxInstances = types.Int64Value(ProjectDefaultValueMaxInstances)
 	}
-	if r.Quotas.Memory != nil {
+	if r.Quotas != nil && r.Quotas.Memory != nil {
 		d.MaxMemory = types.Int64Value(int64(*r.Quotas.Memory) / HelperGbToBytes)
 	} else {
 		d.MaxMemory = types.Int64Value(ProjectDefaultValueMaxMemory)
 	}
-	if r.Quotas.Storage != nil {
+	if r.Quotas != nil && r.Quotas.Storage != nil {
 		d.MaxStorage = types.Int64Value(int64(*r.Quotas.Storage) / HelperGbToBytes)
 	} else {
 		d.MaxStorage = types.Int64Value(ProjectDefaultValueMaxStorage)
 	}
-	if r.Quotas.Vcpus != nil {
+	if r.Quotas != nil && r.Quotas.Vcpus != nil {
 		d.MaxVCPUs = types.Int64Value(int64(*r.Quotas.Vcpus))
 	} else {
 		d.MaxVCPUs = types.Int64Value(ProjectDefaultValueMaxVCPUs)
@@ -315,6 +315,9 @@ func projectModelToResource(r *sdk.Project, d *ProjectResourceModel) {
 
 	privateSubnets := map[string]attr.Value{}
 	for _, p := range r.PrivateSubnets {
+		if p.Key == nil {
+			continue
+		}
 		if p.Value != nil {
 			privateSubnets[*p.Key] = types.StringPointerValue(p.Value)
 		} else {
