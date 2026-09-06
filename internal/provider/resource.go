@@ -132,6 +132,7 @@ const (
 	KeyTimeouts                   = "timeouts"
 	KeyToken                      = "token"
 	KeyType                       = "type"
+	KeyUefi                       = "uefi"
 	KeyURI                        = "uri"
 	KeyUsers                      = "users"
 	KeyVCPUs                      = "vcpus"

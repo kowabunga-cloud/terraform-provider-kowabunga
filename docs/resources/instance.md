@@ -29,6 +29,7 @@ Manages a raw virtual machine instance resource. Usage of instance resource requ
 
 - `desc` (String) Resource extended description
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
+- `uefi` (Boolean) Enable UEFI secure boot firmware (vs. legacy BIOS, default: **true**)
 
 ### Read-Only
 

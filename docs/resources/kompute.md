@@ -32,6 +32,7 @@ Manages a Kompute virtual machine resource. **Kompute** is an seamless automated
 - `public` (Boolean) Should Kompute instance be exposed over public Internet ? (default: **false**)
 - `template` (String) Associated template name or ID (zone's default storage pool's default if unspecified)
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
+- `uefi` (Boolean) Enable UEFI secure boot firmware (vs. legacy BIOS, default: **true**)
 
 ### Read-Only
 

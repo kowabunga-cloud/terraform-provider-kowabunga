@@ -17,12 +17,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 const (
 	InstanceResourceName = "instance"
+
+	InstanceDefaultValueUefi = true
 )
 
 var _ resource.Resource = &InstanceResource{}
@@ -47,6 +50,7 @@ type InstanceResourceModel struct {
 	Memory   types.Int64    `tfsdk:"mem"`
 	Adapters types.List     `tfsdk:"adapters"`
 	Volumes  types.List     `tfsdk:"volumes"`
+	Uefi     types.Bool     `tfsdk:"uefi"`
 }
 
 func (r *InstanceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -91,6 +95,12 @@ func (r *InstanceResource) Schema(ctx context.Context, req resource.SchemaReques
 				ElementType:         types.StringType,
 				Required:            true,
 			},
+			KeyUefi: schema.BoolAttribute{
+				MarkdownDescription: "Enable UEFI secure boot firmware (vs. legacy BIOS, default: **true**)",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(InstanceDefaultValueUefi),
+			},
 		},
 	}
 	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
@@ -112,6 +122,7 @@ func instanceResourceToModel(d *InstanceResourceModel) sdk.Instance {
 		Memory:      memSize,
 		Adapters:    adapters,
 		Volumes:     volumes,
+		Uefi:        d.Uefi.ValueBoolPointer(),
 	}
 }
 
@@ -141,6 +152,11 @@ func instanceModelToResource(r *sdk.Instance, d *InstanceResourceModel) {
 		volumes = append(volumes, types.StringValue(v))
 	}
 	d.Volumes, _ = types.ListValue(types.StringType, volumes)
+	if r.Uefi != nil {
+		d.Uefi = types.BoolPointerValue(r.Uefi)
+	} else {
+		d.Uefi = types.BoolValue(InstanceDefaultValueUefi)
+	}
 }
 
 func (r *InstanceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

@@ -32,6 +32,7 @@ const (
 	KomputeDefaultValueTemplate  = ""
 	KomputeDefaultValueExtraDisk = 0
 	KomputeDefaultValuePublic    = false
+	KomputeDefaultValueUefi      = true
 )
 
 var _ resource.Resource = &KomputeResource{}
@@ -60,6 +61,7 @@ type KomputeResourceModel struct {
 	ExtraDisk types.Int64    `tfsdk:"extra_disk"`
 	Public    types.Bool     `tfsdk:"public"`
 	IP        types.String   `tfsdk:"ip"`
+	Uefi      types.Bool     `tfsdk:"uefi"`
 }
 
 func (r *KomputeResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -130,6 +132,12 @@ func (r *KomputeResource) Schema(ctx context.Context, req resource.SchemaRequest
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			KeyUefi: schema.BoolAttribute{
+				MarkdownDescription: "Enable UEFI secure boot firmware (vs. legacy BIOS, default: **true**)",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(KomputeDefaultValueUefi),
+			},
 		},
 	}
 	maps.Copy(resp.Schema.Attributes, resourceAttributes(&ctx))
@@ -149,6 +157,7 @@ func komputeResourceToModel(d *KomputeResourceModel) sdk.Kompute {
 		Disk:        diskSize,
 		DataDisk:    &extraDiskSize,
 		Ip:          d.IP.ValueStringPointer(),
+		Uefi:        d.Uefi.ValueBoolPointer(),
 	}
 }
 
@@ -179,6 +188,11 @@ func komputeModelToResource(r *sdk.Kompute, d *KomputeResourceModel) {
 		d.IP = types.StringPointerValue(r.Ip)
 	} else {
 		d.IP = types.StringValue("")
+	}
+	if r.Uefi != nil {
+		d.Uefi = types.BoolPointerValue(r.Uefi)
+	} else {
+		d.Uefi = types.BoolValue(KomputeDefaultValueUefi)
 	}
 }
 

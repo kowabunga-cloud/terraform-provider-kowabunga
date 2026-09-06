@@ -17,6 +17,7 @@ Manages a region resource
 
 ### Required
 
+- `domain` (String) Region domain name (e.g. myregion.kowabunga.acme.com).
 - `name` (String) Resource name
 
 ### Optional
