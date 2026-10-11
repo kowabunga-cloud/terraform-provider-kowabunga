@@ -196,7 +196,7 @@ func (r *KaktusResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	// create a new kaktus
 	m := kaktusResourceToModel(ctx, data)
-	kaktus, _, err := r.Data.K.ZoneAPI.CreateKaktus(ctx, zoneId).Kaktus(m).Execute()
+	kaktus, _, err := r.Data.K.ZoneAPI.CreateZoneKaktus(ctx, zoneId).Kaktus(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -254,7 +254,7 @@ func (r *KaktusResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := kaktusResourceToModel(ctx, data)
-	kaktus, _, err := r.Data.K.KaktusAPI.UpdateKaktus(ctx, data.ID.ValueString()).Kaktus(m).Execute()
+	kaktus, _, err := r.Data.K.KaktusAPI.UpdateKaktus(ctx, data.ID.ValueString()).KaktusUpdate(updateModel[sdk.KaktusUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

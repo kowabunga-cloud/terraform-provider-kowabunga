@@ -115,7 +115,7 @@ func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	// create a new zone
 	m := zoneResourceToModel(data)
-	zone, _, err := r.Data.K.RegionAPI.CreateZone(ctx, regionId).Zone(m).Execute()
+	zone, _, err := r.Data.K.RegionAPI.CreateRegionZone(ctx, regionId).Zone(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -172,7 +172,7 @@ func (r *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := zoneResourceToModel(data)
-	zone, _, err := r.Data.K.ZoneAPI.UpdateZone(ctx, data.ID.ValueString()).Zone(m).Execute()
+	zone, _, err := r.Data.K.ZoneAPI.UpdateZone(ctx, data.ID.ValueString()).ZoneUpdate(updateModel[sdk.ZoneUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

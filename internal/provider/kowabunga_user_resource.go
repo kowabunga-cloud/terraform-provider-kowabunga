@@ -153,7 +153,7 @@ func (r *UserResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	if data.Bot.ValueBool() {
 		// request server to generate a new robot API key, will be sent by email
-		_, err = r.Data.K.UserAPI.SetUserApiToken(ctx, *user.Id).Execute()
+		_, _, err = r.Data.K.UserAPI.SetUserApiToken(ctx, *user.Id).Execute()
 		if err != nil {
 			errorCreateGeneric(resp, err)
 			return
@@ -216,7 +216,7 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := userResourceToModel(data)
-	user, _, err := r.Data.K.UserAPI.UpdateUser(ctx, data.ID.ValueString()).User(m).Execute()
+	user, _, err := r.Data.K.UserAPI.UpdateUser(ctx, data.ID.ValueString()).UserUpdate(updateModel[sdk.UserUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

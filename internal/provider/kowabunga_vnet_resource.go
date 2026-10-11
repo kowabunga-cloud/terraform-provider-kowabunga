@@ -99,7 +99,7 @@ func vnetResourceToModel(d *VNetResourceModel) sdk.VNet {
 	return sdk.VNet{
 		Name:        d.Name.ValueString(),
 		Description: d.Desc.ValueStringPointer(),
-		Vlan:        d.VLAN.ValueInt64Pointer(),
+		Vlan:        toInt32Pointer(d.VLAN.ValueInt64Pointer()),
 		Interface:   d.Interface.ValueString(),
 		Private:     d.Private.ValueBoolPointer(),
 	}
@@ -118,7 +118,7 @@ func vnetModelToResource(r *sdk.VNet, d *VNetResourceModel) {
 		d.Desc = types.StringValue("")
 	}
 	if r.Vlan != nil {
-		d.VLAN = types.Int64PointerValue(r.Vlan)
+		d.VLAN = types.Int64PointerValue(toInt64Pointer(r.Vlan))
 	} else {
 		d.VLAN = types.Int64Value(VNetDefaultValueVlan)
 	}
@@ -156,7 +156,7 @@ func (r *VNetResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	// create a new virtual network
 	m := vnetResourceToModel(data)
-	vnet, _, err := r.Data.K.RegionAPI.CreateVNet(ctx, regionId).VNet(m).Execute()
+	vnet, _, err := r.Data.K.RegionAPI.CreateRegionVNet(ctx, regionId).VNet(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -214,7 +214,7 @@ func (r *VNetResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := vnetResourceToModel(data)
-	vnet, _, err := r.Data.K.VnetAPI.UpdateVNet(ctx, data.ID.ValueString()).VNet(m).Execute()
+	vnet, _, err := r.Data.K.VnetAPI.UpdateVNet(ctx, data.ID.ValueString()).VNetUpdate(updateModel[sdk.VNetUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

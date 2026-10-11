@@ -682,7 +682,7 @@ func kawaiiModelToNetworkConfig(ctx context.Context, r *sdk.Kawaii, d *KawaiiRes
 	for _, z := range r.Netip.Zones {
 		v := map[string]attr.Value{
 			KeyZone:      types.StringValue(z.Zone),
-			KeyPublicIP:  types.StringValue(z.Public),
+			KeyPublicIP:  types.StringPointerValue(z.Public),
 			KeyPrivateIP: types.StringValue(z.Private),
 		}
 		object, _ := types.ObjectValue(zoneNetCfgType, v)
@@ -1019,7 +1019,7 @@ func (r *KawaiiResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := kawaiiResourceToModel(ctx, data)
-	kawaii, _, err := r.Data.K.KawaiiAPI.UpdateKawaii(ctx, data.ID.ValueString()).Kawaii(m).Execute()
+	kawaii, _, err := r.Data.K.KawaiiAPI.UpdateKawaii(ctx, data.ID.ValueString()).KawaiiUpdate(updateModel[sdk.KawaiiUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

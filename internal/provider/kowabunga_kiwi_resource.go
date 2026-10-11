@@ -132,7 +132,7 @@ func (r *KiwiResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	// create a new network gateway
 	m := kiwiResourceToModel(ctx, data)
-	kiwi, _, err := r.Data.K.RegionAPI.CreateKiwi(ctx, regionId).Kiwi(m).Execute()
+	kiwi, _, err := r.Data.K.RegionAPI.CreateRegionKiwi(ctx, regionId).Kiwi(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -190,7 +190,7 @@ func (r *KiwiResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := kiwiResourceToModel(ctx, data)
-	kiwi, _, err := r.Data.K.KiwiAPI.UpdateKiwi(ctx, data.ID.ValueString()).Kiwi(m).Execute()
+	kiwi, _, err := r.Data.K.KiwiAPI.UpdateKiwi(ctx, data.ID.ValueString()).KiwiUpdate(updateModel[sdk.KiwiUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

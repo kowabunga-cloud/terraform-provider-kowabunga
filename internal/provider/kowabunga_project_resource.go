@@ -114,6 +114,7 @@ func (r *ProjectResource) Schema(ctx context.Context, req resource.SchemaRequest
 				MarkdownDescription: "The project default root password, set at cloud-init instance bootstrap phase. Will be randomly auto-generated at each instance creation if unspecified.",
 				Optional:            true,
 				Computed:            true,
+				Sensitive:           true,
 				Default:             stringdefault.StaticString(ProjectDefaultValueRootPassword),
 			},
 			KeyBootstrapUser: schema.StringAttribute{
@@ -264,9 +265,9 @@ func projectModelToResource(r *sdk.Project, d *ProjectResourceModel) {
 	} else {
 		d.Domain = types.StringValue(ProjectDefaultValueDomain)
 	}
-	if r.RootPassword != nil {
-		d.RootPassword = types.StringPointerValue(r.RootPassword)
-	} else {
+	// root password is write-only, never returned by the API: keep the
+	// planned/state value, if any
+	if d.RootPassword.IsNull() || d.RootPassword.IsUnknown() {
 		d.RootPassword = types.StringValue(ProjectDefaultValueRootPassword)
 	}
 	if r.BootstrapUser != nil {
@@ -432,7 +433,7 @@ func (r *ProjectResource) Update(ctx context.Context, req resource.UpdateRequest
 	defer r.Data.Mutex.Unlock()
 
 	m := projectResourceToModel(ctx, data)
-	project, _, err := r.Data.K.ProjectAPI.UpdateProject(ctx, data.ID.ValueString()).Project(m).Execute()
+	project, _, err := r.Data.K.ProjectAPI.UpdateProject(ctx, data.ID.ValueString()).ProjectUpdate(updateModel[sdk.ProjectUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

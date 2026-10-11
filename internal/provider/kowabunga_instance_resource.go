@@ -118,7 +118,7 @@ func instanceResourceToModel(ctx context.Context, d *InstanceResourceModel) sdk.
 	return sdk.Instance{
 		Name:        d.Name.ValueString(),
 		Description: d.Desc.ValueStringPointer(),
-		Vcpus:       d.VCPUs.ValueInt64(),
+		Vcpus:       toInt32(d.VCPUs.ValueInt64()),
 		Memory:      memSize,
 		Adapters:    adapters,
 		Volumes:     volumes,
@@ -139,7 +139,7 @@ func instanceModelToResource(r *sdk.Instance, d *InstanceResourceModel) {
 	} else {
 		d.Desc = types.StringValue("")
 	}
-	d.VCPUs = types.Int64Value(r.Vcpus)
+	d.VCPUs = types.Int64Value(int64(r.Vcpus))
 	d.Memory = types.Int64Value(memSize)
 	adapters := []attr.Value{}
 	for _, a := range r.Adapters {
@@ -248,7 +248,7 @@ func (r *InstanceResource) Update(ctx context.Context, req resource.UpdateReques
 	defer r.Data.Mutex.Unlock()
 
 	m := instanceResourceToModel(ctx, data)
-	instance, _, err := r.Data.K.InstanceAPI.UpdateInstance(ctx, data.ID.ValueString()).Instance(m).Execute()
+	instance, _, err := r.Data.K.InstanceAPI.UpdateInstance(ctx, data.ID.ValueString()).InstanceUpdate(updateModel[sdk.InstanceUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

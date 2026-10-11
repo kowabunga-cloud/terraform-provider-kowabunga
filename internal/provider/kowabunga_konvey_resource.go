@@ -198,12 +198,12 @@ func konveyEndpointsModel(ctx context.Context, d *KonveyResourceModel) []sdk.Kon
 
 		backendsModel := sdk.KonveyBackends{
 			Hosts: hosts,
-			Port:  ep.BackendPort.ValueInt64(),
+			Port:  toInt32(ep.BackendPort.ValueInt64()),
 		}
 
 		epModel = append(epModel, sdk.KonveyEndpoint{
 			Name:     ep.Name.ValueString(),
-			Port:     ep.Port.ValueInt64(),
+			Port:     toInt32(ep.Port.ValueInt64()),
 			Protocol: ep.Protocol.ValueString(),
 			Backends: backendsModel,
 		})
@@ -247,8 +247,8 @@ func konveyModelToEndpoints(ctx context.Context, r *sdk.Konvey, d *KonveyResourc
 		r := map[string]attr.Value{
 			KeyName:        types.StringValue(ep.Name),
 			KeyProtocol:    types.StringValue(ep.Protocol),
-			KeyPort:        types.Int64Value(ep.Port),
-			KeyBackendPort: types.Int64Value(ep.Backends.Port),
+			KeyPort:        types.Int64Value(int64(ep.Port)),
+			KeyBackendPort: types.Int64Value(int64(ep.Backends.Port)),
 		}
 
 		hosts := []attr.Value{}
@@ -388,7 +388,7 @@ func (r *KonveyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := konveyResourceToModel(ctx, data)
-	konvey, _, err := r.Data.K.KonveyAPI.UpdateKonvey(ctx, data.ID.ValueString()).Konvey(m).Execute()
+	konvey, _, err := r.Data.K.KonveyAPI.UpdateKonvey(ctx, data.ID.ValueString()).KonveyUpdate(updateModel[sdk.KonveyUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

@@ -252,7 +252,7 @@ func (r *AdapterResource) Create(ctx context.Context, req resource.CreateRequest
 
 	// create a new adapter
 	m := adapterResourceToModel(ctx, data)
-	api := r.Data.K.SubnetAPI.CreateAdapter(ctx, subnetId).Adapter(m)
+	api := r.Data.K.SubnetAPI.CreateSubnetAdapter(ctx, subnetId).Adapter(m)
 	if data.Assign.ValueBool() && len(m.Addresses) == 0 {
 		api = api.AssignIP(data.Assign.ValueBool())
 	}
@@ -327,7 +327,7 @@ func (r *AdapterResource) Update(ctx context.Context, req resource.UpdateRequest
 	defer r.Data.Mutex.Unlock()
 
 	m := adapterResourceToModel(ctx, data)
-	adapter, _, err := r.Data.K.AdapterAPI.UpdateAdapter(ctx, data.ID.ValueString()).Adapter(m).Execute()
+	adapter, _, err := r.Data.K.AdapterAPI.UpdateAdapter(ctx, data.ID.ValueString()).AdapterUpdate(updateModel[sdk.AdapterUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

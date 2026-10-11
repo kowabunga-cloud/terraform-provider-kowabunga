@@ -8,9 +8,11 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"maps"
+	"math"
 	"net/http"
 	"time"
 
@@ -185,6 +187,44 @@ const (
 type ResourceBaseModel struct {
 	ID       types.String   `tfsdk:"id"`
 	Timeouts timeouts.Value `tfsdk:"timeouts"`
+}
+
+// toInt32 converts a Terraform 64-bit integer to an API model 32-bit one,
+// clamping out of range values (attributes validators enforce actual ranges).
+func toInt32(v int64) int32 {
+	return int32(max(min(v, math.MaxInt32), math.MinInt32)) // #nosec G115 -- clamped
+}
+
+// toInt32Pointer converts an optional Terraform 64-bit integer to an API model
+// 32-bit one.
+func toInt32Pointer(v *int64) *int32 {
+	if v == nil {
+		return nil
+	}
+	i := toInt32(*v)
+	return &i
+}
+
+// toInt64Pointer converts an optional API model 32-bit integer to a Terraform
+// 64-bit one.
+func toInt64Pointer(v *int32) *int64 {
+	if v == nil {
+		return nil
+	}
+	i := int64(*v)
+	return &i
+}
+
+// updateModel converts a resource API model into its update counterpart
+// (used by PUT operations), dropping read-only and immutable properties.
+func updateModel[T any](m any) T {
+	var u T
+	// generated API models always (un)marshal properly
+	b, err := json.Marshal(m)
+	if err == nil {
+		_ = json.Unmarshal(b, &u)
+	}
+	return u
 }
 
 func errorUnconfiguredResource(req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -458,7 +498,7 @@ func getNfsID(ctx context.Context, data *KowabungaProviderData, id string) (stri
 	}
 
 	// fall back, it may be a NFS storage name then, finds its associated ID
-	storages, _, err := data.K.NfsAPI.ListStorageNFSs(ctx).Execute()
+	storages, _, err := data.K.NfsAPI.ListStorageNFSes(ctx).Execute()
 	if err == nil {
 		for _, s := range storages {
 			ns, _, err := data.K.NfsAPI.ReadStorageNFS(ctx, s).Execute()

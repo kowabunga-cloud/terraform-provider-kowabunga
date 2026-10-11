@@ -153,6 +153,7 @@ func (r *KawaiiIPsecConnectionResource) Schema(ctx context.Context, req resource
 			KeyPreSharedKey: schema.StringAttribute{
 				MarkdownDescription: "The Pre-Shared Key (PSK) to authenticate the VPN tunnel to your peer VPN gateway",
 				Required:            true,
+				Sensitive:           true,
 			},
 			KeyRemoteSubnet: schema.StringAttribute{
 				MarkdownDescription: "Remote Subnet CIDR",
@@ -279,19 +280,19 @@ func kawaiiIPsecResourceModel(ctx context.Context, d *KawaiiIPsecConnectionResou
 		StartAction:               d.StartAction.ValueStringPointer(),
 		RekeyTime:                 d.Rekey.ValueStringPointer(),
 		Phase1Lifetime:            d.Phase1Lifetime.ValueStringPointer(),
-		Phase1DhGroupNumber:       d.Phase1DHGroupNumber.ValueInt64(),
+		Phase1DhGroupNumber:       toInt32(d.Phase1DHGroupNumber.ValueInt64()),
 		Phase1IntegrityAlgorithm:  d.Phase1IntegrityAlgorithm.ValueString(),
 		Phase1EncryptionAlgorithm: d.Phase1EncryptionAlgorithm.ValueString(),
 		Phase2Lifetime:            d.Phase2Lifetime.ValueStringPointer(),
-		Phase2DhGroupNumber:       d.Phase2DHGroupNumber.ValueInt64(),
+		Phase2DhGroupNumber:       toInt32(d.Phase2DHGroupNumber.ValueInt64()),
 		Phase2IntegrityAlgorithm:  d.Phase2IntegrityAlgorithm.ValueString(),
 		Phase2EncryptionAlgorithm: d.Phase2EncryptionAlgorithm.ValueString(),
 		Firewall:                  kawaiiIPsecFirewallModel(ctx, d),
 	}
 }
 
-func kawaiiIPsecFirewallModel(ctx context.Context, d *KawaiiIPsecConnectionResourceModel) *sdk.KawaiiFirewall {
-	fwModel := sdk.KawaiiFirewall{
+func kawaiiIPsecFirewallModel(ctx context.Context, d *KawaiiIPsecConnectionResourceModel) *sdk.KawaiiIpSecFirewall {
+	fwModel := sdk.KawaiiIpSecFirewall{
 		Ingress: []sdk.KawaiiFirewallIngressRule{},
 	}
 
@@ -374,7 +375,8 @@ func kawaiiIPsecModelToResource(ctx context.Context, r *sdk.KawaiiIpSec, d *Kawa
 	}
 	d.RemotePeer = types.StringValue(r.RemoteIp)
 	d.RemoteSubnet = types.StringValue(r.RemoteSubnet)
-	d.PreSharedKey = types.StringValue(r.PreSharedKey)
+	// pre-shared key is write-only, never returned by the API: keep the
+	// planned/state value
 	if r.Description != nil {
 		d.Desc = types.StringPointerValue(r.Description)
 	} else {
@@ -405,7 +407,7 @@ func kawaiiIPsecModelToResource(ctx context.Context, r *sdk.KawaiiIpSec, d *Kawa
 	} else {
 		d.Phase1Lifetime = types.StringValue(KawaiiIPsecDefaultPhaseLifetime)
 	}
-	d.Phase1DHGroupNumber = types.Int64Value(r.Phase1DhGroupNumber)
+	d.Phase1DHGroupNumber = types.Int64Value(int64(r.Phase1DhGroupNumber))
 	d.Phase1IntegrityAlgorithm = types.StringValue(r.Phase1IntegrityAlgorithm)
 	d.Phase1EncryptionAlgorithm = types.StringValue(r.Phase1EncryptionAlgorithm)
 	if r.Phase2Lifetime != nil {
@@ -413,7 +415,7 @@ func kawaiiIPsecModelToResource(ctx context.Context, r *sdk.KawaiiIpSec, d *Kawa
 	} else {
 		d.Phase2Lifetime = types.StringValue(KawaiiIPsecDefaultPhaseLifetime)
 	}
-	d.Phase2DHGroupNumber = types.Int64Value(r.Phase2DhGroupNumber)
+	d.Phase2DHGroupNumber = types.Int64Value(int64(r.Phase2DhGroupNumber))
 	d.Phase2IntegrityAlgorithm = types.StringValue(r.Phase2IntegrityAlgorithm)
 	d.Phase2EncryptionAlgorithm = types.StringValue(r.Phase2EncryptionAlgorithm)
 	kawaiiIPsecModelToIngressRules(ctx, r, d)
@@ -508,7 +510,7 @@ func (r *KawaiiIPsecConnectionResource) Update(ctx context.Context, req resource
 	defer r.Data.Mutex.Unlock()
 
 	m := kawaiiIPsecResourceModel(ctx, data)
-	kawaiiIpSec, _, err := r.Data.K.KawaiiAPI.UpdateKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).KawaiiIpSec(m).Execute()
+	kawaiiIpSec, _, err := r.Data.K.KawaiiAPI.UpdateKawaiiIpSec(ctx, data.KawaiiID.ValueString(), data.ID.ValueString()).KawaiiIpSecUpdate(updateModel[sdk.KawaiiIpSecUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

@@ -152,7 +152,7 @@ func komputeResourceToModel(d *KomputeResourceModel) sdk.Kompute {
 	return sdk.Kompute{
 		Name:        d.Name.ValueString(),
 		Description: d.Desc.ValueStringPointer(),
-		Vcpus:       d.VCPUs.ValueInt64(),
+		Vcpus:       toInt32(d.VCPUs.ValueInt64()),
 		Memory:      memSize,
 		Disk:        diskSize,
 		DataDisk:    &extraDiskSize,
@@ -180,7 +180,7 @@ func komputeModelToResource(r *sdk.Kompute, d *KomputeResourceModel) {
 	} else {
 		d.Desc = types.StringValue("")
 	}
-	d.VCPUs = types.Int64Value(r.Vcpus)
+	d.VCPUs = types.Int64Value(int64(r.Vcpus))
 	d.Memory = types.Int64Value(memSize)
 	d.Disk = types.Int64Value(diskSize)
 	d.ExtraDisk = types.Int64Value(extraDiskSize)
@@ -311,7 +311,7 @@ func (r *KomputeResource) Update(ctx context.Context, req resource.UpdateRequest
 	defer r.Data.Mutex.Unlock()
 
 	m := komputeResourceToModel(data)
-	kompute, _, err := r.Data.K.KomputeAPI.UpdateKompute(ctx, data.ID.ValueString()).Kompute(m).Execute()
+	kompute, _, err := r.Data.K.KomputeAPI.UpdateKompute(ctx, data.ID.ValueString()).KomputeUpdate(updateModel[sdk.KomputeUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

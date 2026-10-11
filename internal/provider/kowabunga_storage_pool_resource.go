@@ -149,7 +149,7 @@ func storagePoolResourceToModel(ctx context.Context, d *StoragePoolResourceModel
 		Description:    d.Desc.ValueStringPointer(),
 		Pool:           d.Pool.ValueString(),
 		CephAddress:    d.Address.ValueStringPointer(),
-		CephPort:       d.Port.ValueInt64Pointer(),
+		CephPort:       toInt32Pointer(d.Port.ValueInt64Pointer()),
 		CephSecretUuid: d.Secret.ValueStringPointer(),
 		Cost:           cost,
 		Agents:         agents,
@@ -175,7 +175,7 @@ func storagePoolModelToResource(r *sdk.StoragePool, d *StoragePoolResourceModel)
 		d.Address = types.StringValue("")
 	}
 	if r.CephPort != nil {
-		d.Port = types.Int64PointerValue(r.CephPort)
+		d.Port = types.Int64PointerValue(toInt64Pointer(r.CephPort))
 	} else {
 		d.Port = types.Int64Value(0)
 	}
@@ -220,7 +220,7 @@ func (r *StoragePoolResource) Create(ctx context.Context, req resource.CreateReq
 
 	// create a new storage pool
 	m := storagePoolResourceToModel(ctx, data)
-	pool, _, err := r.Data.K.RegionAPI.CreateStoragePool(ctx, regionId).StoragePool(m).Execute()
+	pool, _, err := r.Data.K.RegionAPI.CreateRegionStoragePool(ctx, regionId).StoragePool(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -287,7 +287,7 @@ func (r *StoragePoolResource) Update(ctx context.Context, req resource.UpdateReq
 	defer r.Data.Mutex.Unlock()
 
 	m := storagePoolResourceToModel(ctx, data)
-	pool, _, err := r.Data.K.PoolAPI.UpdateStoragePool(ctx, data.ID.ValueString()).StoragePool(m).Execute()
+	pool, _, err := r.Data.K.PoolAPI.UpdateStoragePool(ctx, data.ID.ValueString()).StoragePoolUpdate(updateModel[sdk.StoragePoolUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

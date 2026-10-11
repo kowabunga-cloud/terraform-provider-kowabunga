@@ -243,7 +243,7 @@ func (r *SubnetResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	// create a new subnet
 	m := subnetResourceToModel(ctx, data)
-	subnet, _, err := r.Data.K.VnetAPI.CreateSubnet(ctx, vnetId).Subnet(m).Execute()
+	subnet, _, err := r.Data.K.VnetAPI.CreateVNetSubnet(ctx, vnetId).Subnet(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -310,7 +310,7 @@ func (r *SubnetResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := subnetResourceToModel(ctx, data)
-	subnet, _, err := r.Data.K.SubnetAPI.UpdateSubnet(ctx, data.ID.ValueString()).Subnet(m).Execute()
+	subnet, _, err := r.Data.K.SubnetAPI.UpdateSubnet(ctx, data.ID.ValueString()).SubnetUpdate(updateModel[sdk.SubnetUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

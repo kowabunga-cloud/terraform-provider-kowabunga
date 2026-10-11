@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/terraform-plugin-framework-timeouts v0.7.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-log v0.11.0
-	github.com/kowabunga-cloud/kowabunga-go v0.54.0
+	github.com/kowabunga-cloud/kowabunga-go v0.58.0
 )
 
 require (

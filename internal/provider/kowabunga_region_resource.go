@@ -166,7 +166,7 @@ func (r *RegionResource) Update(ctx context.Context, req resource.UpdateRequest,
 	defer r.Data.Mutex.Unlock()
 
 	m := regionResourceToModel(data)
-	region, _, err := r.Data.K.RegionAPI.UpdateRegion(ctx, data.ID.ValueString()).Region(m).Execute()
+	region, _, err := r.Data.K.RegionAPI.UpdateRegion(ctx, data.ID.ValueString()).RegionUpdate(updateModel[sdk.RegionUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

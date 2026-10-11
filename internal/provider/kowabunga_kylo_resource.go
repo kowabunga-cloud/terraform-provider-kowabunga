@@ -270,7 +270,7 @@ func (r *KyloResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	defer r.Data.Mutex.Unlock()
 
 	m := kyloResourceToModel(ctx, data)
-	kylo, _, err := r.Data.K.KyloAPI.UpdateKylo(ctx, data.ID.ValueString()).Kylo(m).Execute()
+	kylo, _, err := r.Data.K.KyloAPI.UpdateKylo(ctx, data.ID.ValueString()).KyloUpdate(updateModel[sdk.KyloUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

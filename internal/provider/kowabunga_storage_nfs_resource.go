@@ -136,7 +136,7 @@ func storageNfsResourceToModel(ctx context.Context, d *StorageNfsResourceModel) 
 		Endpoint:    d.Endpoint.ValueString(),
 		Fs:          d.FS.ValueStringPointer(),
 		Backends:    backends,
-		Port:        d.Port.ValueInt64Pointer(),
+		Port:        toInt32Pointer(d.Port.ValueInt64Pointer()),
 	}
 }
 
@@ -165,7 +165,7 @@ func storageNfsModelToResource(r *sdk.StorageNFS, d *StorageNfsResourceModel) {
 	}
 	d.Backends, _ = types.ListValue(types.StringType, backends)
 	if r.Port != nil {
-		d.Port = types.Int64PointerValue(r.Port)
+		d.Port = types.Int64PointerValue(toInt64Pointer(r.Port))
 	} else {
 		d.Port = types.Int64Value(StorageNfsDefaultValueGaneshaApiPortDefault)
 	}
@@ -206,7 +206,7 @@ func (r *StorageNfsResource) Create(ctx context.Context, req resource.CreateRequ
 
 	// create a new NFS storage
 	m := storageNfsResourceToModel(ctx, data)
-	api := r.Data.K.RegionAPI.CreateStorageNFS(ctx, regionId).StorageNFS(m)
+	api := r.Data.K.RegionAPI.CreateRegionStorageNFS(ctx, regionId).StorageNFS(m)
 	if poolId != "" {
 		api = api.PoolId(poolId)
 	}
@@ -278,7 +278,7 @@ func (r *StorageNfsResource) Update(ctx context.Context, req resource.UpdateRequ
 	defer r.Data.Mutex.Unlock()
 
 	m := storageNfsResourceToModel(ctx, data)
-	nfs, _, err := r.Data.K.NfsAPI.UpdateStorageNFS(ctx, data.ID.ValueString()).StorageNFS(m).Execute()
+	nfs, _, err := r.Data.K.NfsAPI.UpdateStorageNFS(ctx, data.ID.ValueString()).StorageNFSUpdate(updateModel[sdk.StorageNFSUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

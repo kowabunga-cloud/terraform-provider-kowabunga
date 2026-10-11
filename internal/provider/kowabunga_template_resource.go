@@ -147,7 +147,7 @@ func (r *TemplateResource) Create(ctx context.Context, req resource.CreateReques
 	}
 	// create a new template
 	m := templateResourceToModel(data)
-	template, _, err := r.Data.K.PoolAPI.CreateTemplate(ctx, poolId).Template(m).Execute()
+	template, _, err := r.Data.K.PoolAPI.CreateStoragePoolTemplate(ctx, poolId).Template(m).Execute()
 	if err != nil {
 		errorCreateGeneric(resp, err)
 		return
@@ -212,7 +212,7 @@ func (r *TemplateResource) Update(ctx context.Context, req resource.UpdateReques
 	defer r.Data.Mutex.Unlock()
 
 	m := templateResourceToModel(data)
-	template, _, err := r.Data.K.TemplateAPI.UpdateTemplate(ctx, data.ID.ValueString()).Template(m).Execute()
+	template, _, err := r.Data.K.TemplateAPI.UpdateTemplate(ctx, data.ID.ValueString()).TemplateUpdate(updateModel[sdk.TemplateUpdate](m)).Execute()
 	if err != nil {
 		errorUpdateGeneric(resp, err)
 		return

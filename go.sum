@@ -130,8 +130,8 @@ github.com/kevinburke/ssh_config v1.2.0 h1:x584FjTGwHzMwvHx18PXxbBVzfnxogHaAReU4
 github.com/kevinburke/ssh_config v1.2.0/go.mod h1:CT57kijsi8u/K/BOFA39wgDQJ9CxiF4nAY/ojJ6r6mM=
 github.com/klauspost/cpuid/v2 v2.3.0 h1:S4CRMLnYUhGeDFDqkGriYKdfoFlDnMtqTiI/sFzhA9Y=
 github.com/klauspost/cpuid/v2 v2.3.0/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
-github.com/kowabunga-cloud/kowabunga-go v0.54.0 h1:f7gni0RUaVeGIBV2zBPPz6LPSOIUk4SwdI5smEtmRqU=
-github.com/kowabunga-cloud/kowabunga-go v0.54.0/go.mod h1:u4EnJUd750eO9BD6NJQFrcvyQtxB3Dap83v83eEubQw=
+github.com/kowabunga-cloud/kowabunga-go v0.58.0 h1:PdGGmJoN1jrlnu+uPHvxPD2P5BQUbWE2d4Z/YXFgGdM=
+github.com/kowabunga-cloud/kowabunga-go v0.58.0/go.mod h1:u4EnJUd750eO9BD6NJQFrcvyQtxB3Dap83v83eEubQw=
 github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
 github.com/kr/pretty v0.3.1/go.mod h1:hoEshYVHaxMs3cyo3Yncou5ZscifuDolrwPKZanG3xk=
