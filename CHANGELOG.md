@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.58.0](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.6...v0.58.0) (2026-10-11)
+
+### Features
+
+* update to API v0.58.0 ([d54e37a](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/commit/d54e37a6dc217de95e3e2103013c3014bf600d32))
+
 ## [0.57.6](https://github.com/kowabunga-cloud/terraform-provider-kowabunga/compare/v0.57.5...v0.57.6) (2026-09-06)
 
 ### Chores
