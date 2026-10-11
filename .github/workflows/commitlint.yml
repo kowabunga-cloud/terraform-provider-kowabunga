@@ -1,0 +1,11 @@
+name: Conventional Commits
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+jobs:
+  commitlint:
+    uses: kowabunga-cloud/workflows/.github/workflows/commitlint.yml@v1
