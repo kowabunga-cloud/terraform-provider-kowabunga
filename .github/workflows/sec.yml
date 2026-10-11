@@ -1,0 +1,16 @@
+name: Security Checks
+
+on:
+  push:
+    branches: master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+  sec:
+    uses: kowabunga-cloud/workflows/.github/workflows/go-sec.yml@v1
+    secrets: inherit
