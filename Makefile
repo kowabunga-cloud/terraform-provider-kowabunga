@@ -23,6 +23,14 @@ all: mod fmt lint vet test $(BIN) ; @
 test: ; $(info $(M) running tests…) @
 	$Q go test -v ./...
 
+.PHONY: tests
+tests: ; $(info $(M) running tests…) @
+	$Q go test ./... -count=1 -coverprofile=coverage.txt
+
+.PHONY: build
+build: ; $(info $(M) building…) @
+	$Q go build ./...
+
 # Updates all go modules
 update: ; $(info $(M) updating modules…) @
 	$Q go get -u ./...
