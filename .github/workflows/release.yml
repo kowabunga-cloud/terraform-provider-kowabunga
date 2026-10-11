@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: write
   issues: write
   pull-requests: write
@@ -27,6 +28,10 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+
+      # only release commits which passed all checks
+      - name: Wait for CI
+        uses: kowabunga-cloud/workflows/.github/actions/wait-for-ci@v1
 
       - name: Release
         id: semantic
