@@ -1,3 +1,4 @@
 bin/
 terraform-provider-kowabunga
 *~
+coverage.txt
