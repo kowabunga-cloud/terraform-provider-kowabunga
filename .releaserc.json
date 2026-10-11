@@ -9,17 +9,17 @@
             "@semantic-release/commit-analyzer",
             {
                 "preset": "conventionalcommits",
-                "parserOpts": {
-                    "headerPattern": "^(?<type>\\w+)(?<breaking>!)?:\\s+(?<subject>.+)$"
-                },
                 "releaseRules": [
-                    { "type": "BREAKING CHANGE", "release": "major" },
-                    { "type": "feat", "release": "minor" },
-                    { "type": "fix",  "release": "patch" },
-                    { "type": "perf", "release": "patch" },
-                    { "type": "chore", "release": "patch" },
-                    { "type": "docs", "release": false },
-                    { "type": "doc", "release": false }
+                    {
+                        "type": "chore",
+                        "scope": "deps",
+                        "release": "patch"
+                    },
+                    {
+                        "type": "build",
+                        "scope": "deps",
+                        "release": "patch"
+                    }
                 ]
             }
         ],
@@ -27,32 +27,34 @@
             "@semantic-release/release-notes-generator",
             {
                 "preset": "conventionalcommits",
-                "parserOpts": {
-                    "headerPattern": "^(?<type>\\w+)(?<breaking>!)?:\\s+(?<subject>.+)$"
-                },
                 "presetConfig": {
                     "types": [
-                        { "type": "feat", "section": "Features", "hidden": false },
-                        { "type": "fix",  "section": "Bug Fixes", "hidden": false },
-                        { "type": "perf", "section": "Performance Improvements", "hidden": false },
-                        { "type": "chore", "section": "Chores", "hidden": false },
-                        { "type": "docs", "section": "Documentation", "hidden": false },
-                        { "type": "doc", "section": "Documentation", "hidden": false }
+                        {
+                            "type": "feat",
+                            "section": "Features"
+                        },
+                        {
+                            "type": "fix",
+                            "section": "Bug Fixes"
+                        },
+                        {
+                            "type": "perf",
+                            "section": "Performance Improvements"
+                        },
+                        {
+                            "type": "revert",
+                            "section": "Reverts"
+                        },
+                        {
+                            "type": "docs",
+                            "section": "Documentation"
+                        },
+                        {
+                            "type": "chore",
+                            "section": "Chores"
+                        }
                     ]
-                },
-                "writerOpts": {
-                    "groupBy": "type",
-                    "commitGroupsSort": "title",
-                    "commitsSort": ["scope", "subject"]
                 }
-            }
-        ],
-        [
-            "@semantic-release/github",
-            {
-                "successComment": "This ${issue.pull_request ? 'PR is included' : 'issue has been resolved'} in version ${nextRelease.version} :tada:",
-                "labels": false,
-                "releasedLabels": false
             }
         ],
         [
@@ -68,7 +70,15 @@
                 "assets": [
                     "CHANGELOG.md"
                 ],
-                "message": "chore: version ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+                "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+            }
+        ],
+        [
+            "@semantic-release/github",
+            {
+                "successComment": "This ${issue.pull_request ? 'PR is included' : 'issue has been resolved'} in version ${nextRelease.version} :tada:",
+                "labels": false,
+                "releasedLabels": false
             }
         ]
     ]

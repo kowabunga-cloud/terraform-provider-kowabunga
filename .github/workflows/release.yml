@@ -11,81 +11,64 @@ permissions:
   issues: write
   pull-requests: write
 
-env:
-  GO_VERSION: 1.27
-
 jobs:
   release:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
+    concurrency:
+      group: release-${{ github.repository }}
+      cancel-in-progress: false
     outputs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
       new_release_version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-
-      - name: Install dependencies
-        run: |
-          npm install \
-            @semantic-release/changelog@6.0.3 \
-            @semantic-release/git@10.0.1 \
-            conventional-changelog-conventionalcommits@9.1.0
-
-      - name: Create Github App token
-        id: app-token
-        uses: actions/create-github-app-token@v3
+      - name: Release
+        id: semantic
+        uses: kowabunga-cloud/workflows/.github/actions/semantic-release@v1
         with:
           app-id: ${{ vars.KOWABUNGA_BOT_APP_ID }}
           private-key: ${{ secrets.KOWABUNGA_BOT_PRIVATE_KEY }}
-
-      - name: Release
-        uses: cycjimmy/semantic-release-action@v6
-        id: semantic
-        with:
-          semantic_version: 25.0.3
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Debug
-        run: |
-          echo "Releasing ${{ steps.semantic.outputs.new_release_version }}"
 
   goreleaser:
     name: Build & Publish Provider
     if: needs.release.outputs.new_release_published == 'true'
     needs: release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: v${{ needs.release.outputs.new_release_version }}
           fetch-depth: 0
+
+      - name: Find out Go version
+        # latest patch release of the go.mod language version
+        run: |
+          v=$(sed -nE 's/^go ([0-9]+\.[0-9]+).*/\1/p' go.mod)
+          echo "GO_VERSION=${v}" >> "$GITHUB_ENV"
 
       - name: Set up Go
         uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
+          check-latest: true
           cache: true
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         id: import_gpg
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+        uses: goreleaser/goreleaser-action@v7
         with:
           version: latest
           args: release --clean
