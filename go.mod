@@ -3,8 +3,8 @@ module github.com/kowabunga-cloud/terraform-provider-kowabunga
 go 1.27.0
 
 require (
-	github.com/3th1nk/cidr v0.3.0
-	github.com/AfterShip/email-verifier v1.4.1
+	github.com/3th1nk/cidr v0.4.0
+	github.com/AfterShip/email-verifier v1.5.0
 	github.com/hashicorp/terraform-plugin-docs v0.25.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
 	github.com/hashicorp/terraform-plugin-framework-timeouts v0.7.0
@@ -60,7 +60,6 @@ require (
 	github.com/posener/complete v1.2.3 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
-	github.com/stretchr/testify v1.11.1 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yuin/goldmark v1.7.7 // indirect
